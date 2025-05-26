@@ -1,4 +1,4 @@
-# webapp_hamburg_vs_hotdog
+# webapp-hamburg-vs-hotdog
 
 A flask webapp, hamburgers vs. hotdogs
 
