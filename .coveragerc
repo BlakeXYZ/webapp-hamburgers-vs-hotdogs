@@ -1,0 +1,6 @@
+[run]
+source = webapp_hamburg_vs_hotdog
+omit = 
+    tests/*
+    autoapp.py
+
