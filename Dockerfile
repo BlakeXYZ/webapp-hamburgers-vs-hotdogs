@@ -2,6 +2,9 @@
 ARG INSTALL_PYTHON_VERSION=${INSTALL_PYTHON_VERSION:-PYTHON_VERSION_NOT_SET}
 ARG INSTALL_NODE_VERSION=${INSTALL_NODE_VERSION:-NODE_VERSION_NOT_SET}
 
+ARG INSTALL_PYTHON_VERSION=3.12
+ARG INSTALL_NODE_VERSION=20
+
 FROM node:${INSTALL_NODE_VERSION}-bullseye-slim AS node
 FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS builder
 
@@ -21,11 +24,11 @@ RUN npm install
 COPY webpack.config.js autoapp.py ./
 COPY webapp_hamburg_vs_hotdog webapp_hamburg_vs_hotdog
 COPY assets assets
-COPY .env.example .env
+COPY .env .env
 RUN npm run-script build
 
 # ================================= PRODUCTION =================================
-FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye as production
+FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS production
 
 WORKDIR /app
 
@@ -38,19 +41,9 @@ COPY --from=builder --chown=sid:sid /app/webapp_hamburg_vs_hotdog/static /app/we
 COPY requirements requirements
 RUN pip install --no-cache --user -r requirements/prod.txt
 
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-COPY supervisord_programs /etc/supervisor/conf.d
-
 COPY . .
 
 EXPOSE 5000
-ENTRYPOINT ["/bin/bash", "shell_scripts/supervisord_entrypoint.sh"]
-CMD ["-c", "/etc/supervisor/supervisord.conf"]
+CMD ["gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
 
 
-# ================================= DEVELOPMENT ================================
-FROM builder AS development
-RUN pip install --no-cache -r requirements/dev.txt
-EXPOSE 2992
-EXPOSE 5000
-CMD [ "npm", "start" ]
