@@ -26,31 +26,31 @@ jobs:
 
   #TODO: setup and understand this step: build-and-push-image
   # This step builds the Docker image and pushes it to the GitHub Container Registry
-  # build-and-push-image:
-  #   if: "contains(github.event.head_commit.message, '[deploy]')"
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - run-tests
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  build-and-push-image:
+    if: "contains(github.event.head_commit.message, '[deploy]')"
+    runs-on: ubuntu-latest
+    needs:
+      - run-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Log in to the Container registry
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: https://ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Build and push Docker image
-  #       uses: docker/build-push-action@v6
-  #       with:
-  #         context: .
-  #         file: Dockerfile
-  #         push: true
-  #         tags: |
-  #           ghcr.io/BlakeXYZ/ham-test-gitactions-test:latest
-  #           ghcr.io/BlakeXYZ/ham-test-gitactions-test:${{ github.sha }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ghcr.io/BlakeXYZ/ham-test-gitactions-test:latest
+            ghcr.io/BlakeXYZ/ham-test-gitactions-test:${{ github.sha }}
 
   # deploy:
   #   if: "contains(github.event.head_commit.message, '[deploy]')"

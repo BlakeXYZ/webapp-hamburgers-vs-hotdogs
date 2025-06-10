@@ -5,8 +5,6 @@ ARG INSTALL_NODE_VERSION=${INSTALL_NODE_VERSION:-NODE_VERSION_NOT_SET}
 ARG INSTALL_PYTHON_VERSION=3.12
 ARG INSTALL_NODE_VERSION=20
 
-LABEL org.opencontainers.image.source=https://github.com/BlakeXYZ/webapp-hamburgers-vs-hotdogs
-
 FROM node:${INSTALL_NODE_VERSION}-bullseye-slim AS node
 FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS builder
 
@@ -32,6 +30,8 @@ RUN npm run-script build
 # ================================= PRODUCTION STAGE =================================
 # docker build --target production -t <image-name> .
 FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS production
+
+LABEL org.opencontainers.image.source=https://github.com/BlakeXYZ/webapp-hamburgers-vs-hotdogs
 
 WORKDIR /app
 
