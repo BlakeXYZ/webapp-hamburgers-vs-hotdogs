@@ -74,3 +74,7 @@ class TestUser:
         """Check __repr__ output for User."""
         user = User(username="foo", email="foo@bar.com")
         assert user.__repr__() == "<User('foo')>"
+
+    def test_purposeful_fail(self):
+        """This test is designed to fail for practice."""
+        assert 1 == 0
