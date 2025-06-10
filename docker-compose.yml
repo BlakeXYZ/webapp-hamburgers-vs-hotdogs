@@ -8,6 +8,8 @@ x-default-volumes: &default_volumes
     - node-modules:/app/node_modules
     - ./dev.db:/tmp/dev.db
 
+# Build flask-dev environment using powershell (not in ubuntu, wsl shell)
+# cmd: docker compose up flask-dev
 services:
   flask-dev:
     build:
@@ -37,6 +39,12 @@ services:
       GUNICORN_WORKERS: 4
     <<: *default_volumes
 
+  # manage service for running Flask commands
+  # can find commands in commands.py
+  # e.g. test or lint functions
+  # command line compose example:
+  ####cmd: docker-compose run --rm manage test
+  ####cmd: docker-compose run --rm manage lint
   manage:
     build:
       context: .

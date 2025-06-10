@@ -1,4 +1,4 @@
-# ================================== BUILDER ===================================
+# ================================== BUILDER STAGE ===================================
 ARG INSTALL_PYTHON_VERSION=${INSTALL_PYTHON_VERSION:-PYTHON_VERSION_NOT_SET}
 ARG INSTALL_NODE_VERSION=${INSTALL_NODE_VERSION:-NODE_VERSION_NOT_SET}
 
@@ -27,7 +27,8 @@ COPY assets assets
 COPY .env .env
 RUN npm run-script build
 
-# ================================= PRODUCTION =================================
+# ================================= PRODUCTION STAGE =================================
+# docker build --target production -t <image-name> .
 FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS production
 
 WORKDIR /app
@@ -47,3 +48,11 @@ EXPOSE 5000
 CMD ["gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
 
 
+#TODO: Figure out reintroduction of Development Section
+# ================================= DEVELOPMENT STAGE ================================
+# docker build --target development -t <image-name> .
+FROM builder AS development
+RUN pip install --no-cache -r requirements/dev.txt
+EXPOSE 2992
+EXPOSE 5000
+CMD [ "npm", "start" ]

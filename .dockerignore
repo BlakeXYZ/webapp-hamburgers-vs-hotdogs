@@ -1,0 +1,2 @@
+#TODO -- Add files and directories to ignore in the Docker build context
+# This file specifies which files and directories should be ignored by Docker when building an image.
