@@ -27,7 +27,7 @@ jobs:
   #TODO: setup and understand this step: build-and-push-image
   # This step builds the Docker image and pushes it to the GitHub Container Registry
   build-and-push-image:
-    if: "contains(github.event.head_commit.message, 'deploy')"
+    if: "contains(github.event.head_commit.message, '[deploy]')"
     runs-on: ubuntu-latest
     needs:
       - run-tests
@@ -49,8 +49,8 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ghcr.io/BlakeXYZ/ham-test-gitactions-test:latest
-            ghcr.io/BlakeXYZ/ham-test-gitactions-test:${{ github.sha }}
+            ghcr.io/blakexyz/ham-test-gitactions-test:latest
+            ghcr.io/blakexyz/ham-test-gitactions-test:${{ github.sha }}
 
   # deploy:
   #   if: "contains(github.event.head_commit.message, '[deploy]')"

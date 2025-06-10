@@ -31,7 +31,7 @@ RUN npm run-script build
 # docker build --target production -t <image-name> .
 FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS production
 
-LABEL org.opencontainers.image.source=https://github.com/BlakeXYZ/webapp-hamburgers-vs-hotdogs
+LABEL org.opencontainers.image.source=https://github.com/blakexyz/webapp-hamburgers-vs-hotdogs
 
 WORKDIR /app
 
