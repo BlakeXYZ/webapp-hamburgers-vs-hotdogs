@@ -21,11 +21,14 @@ jobs:
       - name: Run tests with Docker Compose
         run: docker compose run --rm manage test
 
-    run-test-after-success:
-      run:
-        echo "Tests passed successfully!"
-        echo "You can now build and deploy the application."
-      
+  run-test-after-success:
+    runs-on: ubuntu-latest
+    needs: 
+      - run-tests
+    steps:
+      - name: Test passed!
+        run: echo "Tests passed successfully!"
+    
 
   build-and-push-image:
     if: "contains(github.event.head_commit.message, '[deploy]')"
