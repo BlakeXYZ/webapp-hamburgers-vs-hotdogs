@@ -52,7 +52,7 @@ env/
 /webapp_hamburg_vs_hotdog/static/build/
 
 # Configuration
-.env
+# .env #local development configuration
 
 # Development database
 *.db
