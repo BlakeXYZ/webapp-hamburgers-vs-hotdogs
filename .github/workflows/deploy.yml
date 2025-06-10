@@ -1,8 +1,9 @@
 name: pipeline
 on:
- push:
-   branches:
-     - "main"
+  - push
+#  push:
+#    branches:
+#      - "main"
 
 permissions:
   contents: read
