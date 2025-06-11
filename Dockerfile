@@ -33,10 +33,6 @@ FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS production
 
 LABEL org.opencontainers.image.source=https://github.com/blakexyz/webapp-hamburgers-vs-hotdogs
 
-# This boot script is used to wait for the database to be ready before starting the application.
-COPY boot.sh /app/boot.sh 
-RUN chmod +x /app/boot.sh
-
 WORKDIR /app
 
 RUN useradd -m sid
@@ -48,13 +44,17 @@ COPY --from=builder --chown=sid:sid /app/webapp_hamburg_vs_hotdog/static /app/we
 COPY requirements requirements
 RUN pip install --no-cache --user -r requirements/prod.txt
 
-COPY . .
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord_programs /etc/supervisor/conf.d
 
+COPY . .
 COPY migrations migrations
 
 EXPOSE 5000
 
-CMD ["sh", "-c", "/app/boot.sh db 5432 -- flask db upgrade && gunicorn -w 3 -k gevent -b 0.0.0.0:5000 webapp_hamburg_vs_hotdog.app:create_app"]
+# CMD ["gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
+ENTRYPOINT ["/bin/bash", "shell_scripts/supervisord_entrypoint.sh"]
+CMD ["-c", "/etc/supervisor/supervisord.conf"]
 
 #TODO: Figure out reintroduction of Development Section
 # ================================= DEVELOPMENT STAGE ================================
