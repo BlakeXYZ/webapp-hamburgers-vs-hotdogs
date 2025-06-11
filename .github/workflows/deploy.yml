@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   run-tests:
+    if: "contains(github.event.head_commit.message, '[test]')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,6 +47,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
+          target: production
           tags: |
             ghcr.io/blakexyz/ham-test-gitactions-test:latest
             ghcr.io/blakexyz/ham-test-gitactions-test:${{ github.sha }}

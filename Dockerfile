@@ -45,6 +45,7 @@ COPY requirements requirements
 RUN pip install --no-cache --user -r requirements/prod.txt
 
 COPY . .
+COPY migrations migrations
 
 EXPOSE 5000
 CMD ["gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
