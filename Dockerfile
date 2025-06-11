@@ -21,6 +21,7 @@ RUN pip install --no-cache -r requirements/prod.txt
 COPY package.json ./
 RUN npm install
 
+
 COPY webpack.config.js autoapp.py ./
 COPY webapp_hamburg_vs_hotdog webapp_hamburg_vs_hotdog
 COPY assets assets
@@ -34,6 +35,8 @@ FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS production
 LABEL org.opencontainers.image.source=https://github.com/blakexyz/webapp-hamburgers-vs-hotdogs
 
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m sid
 RUN chown -R sid:sid /app
