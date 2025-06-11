@@ -55,7 +55,6 @@ COPY migrations migrations
 
 EXPOSE 5000
 
-# CMD ["gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
 ENTRYPOINT ["/bin/bash", "shell_scripts/supervisord_entrypoint.sh"]
 CMD ["-c", "/etc/supervisor/supervisord.conf"]
 
