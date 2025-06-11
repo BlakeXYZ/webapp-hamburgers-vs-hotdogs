@@ -54,7 +54,7 @@ COPY migrations migrations
 
 EXPOSE 5000
 
-CMD ["/app/boot.sh", "db", "5432", "--", "flask", "db", "upgrade", "&&", "gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
+CMD ["sh", "-c", "/app/boot.sh db 5432 -- flask db upgrade && gunicorn -w 3 -k gevent -b 0.0.0.0:5000 webapp_hamburg_vs_hotdog.app:create_app()"]
 
 #TODO: Figure out reintroduction of Development Section
 # ================================= DEVELOPMENT STAGE ================================
