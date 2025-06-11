@@ -55,7 +55,6 @@ env/
 /webapp_hamburg_vs_hotdog/static/build/
 
 # Configuration
-.env
 .env.example 
 
 # Development database
