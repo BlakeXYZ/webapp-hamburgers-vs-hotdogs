@@ -23,9 +23,7 @@ jobs:
       - name: Run tests with Docker Compose
         run: docker compose -f docker-compose-dev.yml run --rm manage test
 
-
-  #TODO: setup and understand this step: build-and-push-image
-  # This step builds the Docker image and pushes it to the GitHub Container Registry
+  # Build and push Docker image to GitHub Container Registry
   build-and-push-image:
     if: "contains(github.event.head_commit.message, '[deploy]')"
     runs-on: ubuntu-latest
