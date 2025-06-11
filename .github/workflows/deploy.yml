@@ -66,10 +66,14 @@ jobs:
     - name: Docker Stack Deploy
       uses: cssnr/stack-deploy-action@v1
       with:
-        name: ham-vs-hot-stack-deploy
+        name: ham-test-gitactions-test 
         file: docker-stack-deploy.yml
         host: hamburgersvshotdogs.com
         user: deploy
         ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
         env_file: ./envfile
         with_registry_auth: true
+        # view info on ubuntu cli with:
+        #   docker stack ls
+        #   docker service ls
+        #   docker service ps ham-vs-hot-stack-deploy_web --no-trunc
