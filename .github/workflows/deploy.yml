@@ -76,4 +76,4 @@ jobs:
         # view info on ubuntu cli with:
         #   docker stack ls
         #   docker service ls
-        #   docker service ps ham-vs-hot-stack-deploy_web --no-trunc
+        #   docker service ps ham-test-gitactions-test_web  --no-trunc 
