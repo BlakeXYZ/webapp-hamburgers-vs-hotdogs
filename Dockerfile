@@ -45,6 +45,7 @@ COPY requirements requirements
 RUN pip install --no-cache --user -r requirements/prod.txt
 
 COPY . .
+
 COPY migrations migrations
 
 EXPOSE 5000
