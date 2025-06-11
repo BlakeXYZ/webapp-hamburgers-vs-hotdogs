@@ -49,6 +49,10 @@ COPY . .
 COPY migrations migrations
 
 EXPOSE 5000
+
+COPY boot.sh /app/boot.sh
+RUN chmod +x /app/boot.sh
+
 CMD ["gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
 
 

@@ -60,7 +60,7 @@ services:
 
   migrate:
     image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
-    command: flask db upgrade
+    command: ["/app/boot.sh", "db", "5432", "--", "flask", "db", "upgrade"]
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
