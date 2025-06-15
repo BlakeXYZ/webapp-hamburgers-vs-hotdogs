@@ -5,7 +5,8 @@ import sys
 
 from flask import Flask, render_template
 
-from webapp_hamburg_vs_hotdog import commands, public, api, user
+from webapp_hamburg_vs_hotdog import commands, public, api
+from webapp_hamburg_vs_hotdog.blueprints import user
 from webapp_hamburg_vs_hotdog.extensions import (
     bcrypt,
     cache,

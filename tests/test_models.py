@@ -4,8 +4,8 @@ import datetime as dt
 
 import pytest
 
-from webapp_hamburg_vs_hotdog.user.models import Role, User
-from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.user.models import Role, User
+from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
 
 from .factories import UserFactory, ClickTestFactory
 

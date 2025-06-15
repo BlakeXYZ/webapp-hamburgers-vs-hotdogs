@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 
 from webapp_hamburg_vs_hotdog.database import db
-from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
 
 blueprint = Blueprint("api", __name__)
 

@@ -14,12 +14,12 @@ from flask_login import login_required, login_user, logout_user
 
 from webapp_hamburg_vs_hotdog.extensions import login_manager
 from webapp_hamburg_vs_hotdog.public.forms import LoginForm
-from webapp_hamburg_vs_hotdog.user.forms import RegisterForm
-from webapp_hamburg_vs_hotdog.user.models import User
+from webapp_hamburg_vs_hotdog.blueprints.user.forms import RegisterForm
+from webapp_hamburg_vs_hotdog.blueprints.user.models import User
 from webapp_hamburg_vs_hotdog.utils import flash_errors
 
 from webapp_hamburg_vs_hotdog.database import db
-from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 

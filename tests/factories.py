@@ -4,8 +4,8 @@ from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 
 from webapp_hamburg_vs_hotdog.database import db
-from webapp_hamburg_vs_hotdog.user.models import User
-from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.user.models import User
+from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
 
 
 class BaseFactory(SQLAlchemyModelFactory):
