@@ -6,7 +6,7 @@ import pytest
 
 from webapp_hamburg_vs_hotdog.user.models import Role, User
 
-from .factories import UserFactory
+from .factories import UserFactory, ClickTestFactory
 
 
 @pytest.mark.usefixtures("db")
