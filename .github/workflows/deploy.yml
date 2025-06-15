@@ -1,8 +1,10 @@
 name: pipeline
 on:
- push:
-   branches:
-     - "main"
+  - push
+# on:
+#  push:
+#    branches:
+#      - "main"
 
 permissions:
   contents: read
@@ -19,17 +21,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Run tests with Docker Compose
-        run: docker compose run --rm manage test
+        run: docker compose -f docker-compose-dev.yml run --rm manage test
 
-  run-test-after-success:
-    runs-on: ubuntu-latest
-    needs: 
-      - run-tests
-    steps:
-      - name: Test passed!
-        run: echo "Tests passed successfully!"
-    
-
+  # Build and push Docker image to GitHub Container Registry
   build-and-push-image:
     if: "contains(github.event.head_commit.message, '[deploy]')"
     runs-on: ubuntu-latest
@@ -50,10 +44,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: Dockerfile
           push: true
+          target: production
           tags: |
-            ghcr.io/dreamsofcode-io/zenstats:latest
-            ghcr.io/dreamsofcode-io/zenstats:${{ github.sha }}
+            ghcr.io/blakexyz/ham-test-gitactions-test:latest
+            ghcr.io/blakexyz/ham-test-gitactions-test:${{ github.sha }}
 
   deploy:
     if: "contains(github.event.head_commit.message, '[deploy]')"
@@ -62,7 +58,7 @@ jobs:
       - build-and-push-image
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: create env file
       run: |
@@ -71,9 +67,14 @@ jobs:
     - name: Docker Stack Deploy
       uses: cssnr/stack-deploy-action@v1
       with:
-        name: zenfulstats
-        file: docker-stack.yaml
-        host: zenful.site
+        name: ham-stack-deploy 
+        file: docker-stack-deploy.yml
+        host: hamburgersvshotdogs.com
         user: deploy
         ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
         env_file: ./envfile
+        registry_auth: true
+        # view info on ubuntu cli with:
+        #   docker stack ls
+        #   docker service ls
+        #   docker service ps ham-test-gitactions-test_web  --no-trunc 

@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BlakeXYZ/webapp_hamburg_vs_hotdog.git"
+    "url": "git+https://github.com/blakexyz/webapp_hamburg_vs_hotdog.git"
   },
   "author": "BlakeXYZ",
   "license": "MIT",
@@ -26,9 +26,9 @@
     "node": ">=20"
   },
   "bugs": {
-    "url": "https://github.com/BlakeXYZ/webapp_hamburg_vs_hotdog/issues"
+    "url": "https://github.com/blakexyz/webapp_hamburg_vs_hotdog/issues"
   },
-  "homepage": "https://github.com/BlakeXYZ/webapp_hamburg_vs_hotdog#readme",
+  "homepage": "https://github.com/blakexyz/webapp_hamburg_vs_hotdog#readme",
   "dependencies": {
     "@fortawesome/fontawesome-free": "6.7.2",
     "bootstrap": "5.3.6",

@@ -1,4 +1,5 @@
 services:
+  #TODO: explore logging for traefik 
   traefik:
     image: traefik:v3.1
     command:
@@ -26,7 +27,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   web:
-    image: ghcr.io/blakexyz/ham-test-08:latest
+    image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
     ports:
       - "8080:5000"  # Map port 8080 on the host to port 5000 in the container
     labels:
@@ -51,13 +52,13 @@ services:
       - FLASK_DEBUG=0
       - LOG_LEVEL=info
       - GUNICORN_WORKERS=4
-
     deploy:
       update_config:
         order: start-first
     depends_on:
       - db
 
+  #TODO: investigate best practice to store/backup database data
   db:
     image: postgres
     user: postgres

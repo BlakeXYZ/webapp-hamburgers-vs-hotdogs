@@ -21,6 +21,7 @@ RUN pip install --no-cache -r requirements/prod.txt
 COPY package.json ./
 RUN npm install
 
+
 COPY webpack.config.js autoapp.py ./
 COPY webapp_hamburg_vs_hotdog webapp_hamburg_vs_hotdog
 COPY assets assets
@@ -31,7 +32,12 @@ RUN npm run-script build
 # docker build --target production -t <image-name> .
 FROM python:${INSTALL_PYTHON_VERSION}-slim-bullseye AS production
 
+LABEL org.opencontainers.image.source=https://github.com/blakexyz/webapp-hamburgers-vs-hotdogs
+
 WORKDIR /app
+
+# installing postgresql-client in Dockerfile to use pg_isready to check if the database is ready inside supervisord_entrypoint.sh
+RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m sid
 RUN chown -R sid:sid /app
@@ -42,11 +48,16 @@ COPY --from=builder --chown=sid:sid /app/webapp_hamburg_vs_hotdog/static /app/we
 COPY requirements requirements
 RUN pip install --no-cache --user -r requirements/prod.txt
 
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord_programs /etc/supervisor/conf.d
+
 COPY . .
+COPY migrations migrations
 
 EXPOSE 5000
-CMD ["gunicorn", "-w", "3", "-k", "gevent", "-b", "0.0.0.0:5000", "webapp_hamburg_vs_hotdog.app:create_app()"]
 
+ENTRYPOINT ["/bin/bash", "shell_scripts/supervisord_entrypoint.sh"]
+CMD ["-c", "/etc/supervisor/supervisord.conf"]
 
 #TODO: Figure out reintroduction of Development Section
 # ================================= DEVELOPMENT STAGE ================================
