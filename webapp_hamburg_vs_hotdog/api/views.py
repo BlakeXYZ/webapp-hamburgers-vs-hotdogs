@@ -9,7 +9,7 @@ blueprint = Blueprint("api", __name__)
 def api_click():
     click_test = db.session.query(ClickTest).get(1)
     if not click_test:
-        click_test = ClickTest(id=1, click_count=0)
+        click_test = ClickTest(id=1, click_count=0) # type: ignore
         db.session.add(click_test)
         db.session.commit()
     if click_test:

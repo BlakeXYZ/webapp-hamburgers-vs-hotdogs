@@ -18,8 +18,6 @@ from webapp_hamburg_vs_hotdog.extensions import (
 )
 
 
-
-
 def create_app(config_object="webapp_hamburg_vs_hotdog.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
 
@@ -55,7 +53,6 @@ def register_blueprints(app):
     app.register_blueprint(api.views.blueprint)
     app.register_blueprint(user.views.blueprint)
     # Exempt the API blueprint from CSRF protection
-    from webapp_hamburg_vs_hotdog.extensions import csrf_protect
     csrf_protect.exempt(api.views.blueprint)    
     return None
 
