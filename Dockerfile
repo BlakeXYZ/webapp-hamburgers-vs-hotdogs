@@ -36,6 +36,7 @@ LABEL org.opencontainers.image.source=https://github.com/blakexyz/webapp-hamburg
 
 WORKDIR /app
 
+# installing postgresql-client in Dockerfile to use pg_isready to check if the database is ready inside supervisord_entrypoint.sh
 RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m sid
