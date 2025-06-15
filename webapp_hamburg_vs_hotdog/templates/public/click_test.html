@@ -1,0 +1,17 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Click Test</h1>
+            <br>
+            <button id="clickButton" class="btn btn-primary">Click Me!</button>
+            <br>
+            <br>
+            <p id="clickCount">Clicks: {{ query_click_test.click_count }}</p>
+        </div>
+    </div>
+{% endblock %}

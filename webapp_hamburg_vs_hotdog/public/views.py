@@ -17,6 +17,9 @@ from webapp_hamburg_vs_hotdog.user.forms import RegisterForm
 from webapp_hamburg_vs_hotdog.user.models import User
 from webapp_hamburg_vs_hotdog.utils import flash_errors
 
+from webapp_hamburg_vs_hotdog.database import db
+from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
+
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
 
@@ -75,3 +78,11 @@ def about():
     """About page."""
     form = LoginForm(request.form)
     return render_template("public/about.html", form=form)
+
+@blueprint.route("/click_test/")
+def click_test():
+    """Click test page."""
+    query_click_test = db.session.query(ClickTest).first() #TODO: Setup DB model to Store Different Buttons and their Clicks
+    return render_template("public/click_test.html", query_click_test=query_click_test)
+
+

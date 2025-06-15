@@ -38,7 +38,7 @@ services:
         <<: *build_args
     entrypoint: flask
     environment:
-      FLASK_ENV: production
+      FLASK_ENV: development
       FLASK_DEBUG: 0
     image: "webapp_hamburg_vs_hotdog-manage"
     stdin_open: true
