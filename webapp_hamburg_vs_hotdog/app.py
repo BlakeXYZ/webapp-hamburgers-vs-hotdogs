@@ -5,7 +5,7 @@ import sys
 
 from flask import Flask, render_template
 
-from webapp_hamburg_vs_hotdog import commands, public, user
+from webapp_hamburg_vs_hotdog import commands, public, api, user
 from webapp_hamburg_vs_hotdog.extensions import (
     bcrypt,
     cache,
@@ -50,7 +50,10 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(public.views.blueprint)
+    app.register_blueprint(api.views.blueprint)
     app.register_blueprint(user.views.blueprint)
+    # Exempt the API blueprint from CSRF protection
+    csrf_protect.exempt(api.views.blueprint)    
     return None
 
 

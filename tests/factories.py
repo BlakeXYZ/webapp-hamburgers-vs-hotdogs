@@ -5,6 +5,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.user.models import User
+from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
 
 
 class BaseFactory(SQLAlchemyModelFactory):
@@ -28,3 +29,14 @@ class UserFactory(BaseFactory):
         """Factory configuration."""
 
         model = User
+
+class ClickTestFactory(BaseFactory):
+    """ClickTest factory."""
+
+    click_count = 0
+
+    class Meta:
+        """Factory configuration."""
+
+        model = ClickTest
+

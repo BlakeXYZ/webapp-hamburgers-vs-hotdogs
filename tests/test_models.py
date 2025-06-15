@@ -5,8 +5,9 @@ import datetime as dt
 import pytest
 
 from webapp_hamburg_vs_hotdog.user.models import Role, User
+from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
 
-from .factories import UserFactory
+from .factories import UserFactory, ClickTestFactory
 
 
 @pytest.mark.usefixtures("db")
@@ -78,3 +79,19 @@ class TestUser:
     # def test_purposeful_fail(self):
     #     """This test is designed to fail for practice."""
     #     assert 1 == 0
+
+
+@pytest.mark.usefixtures("db")
+class TestClickTest:
+    """ClickTest tests."""
+
+    def test_click_test_factory(self, db):
+        """Test ClickTest factory."""
+        click_test = ClickTestFactory()
+        db.session.commit()
+        assert click_test.click_count == 0
+
+    def test_click_test_repr(self):
+        """Check __repr__ output for ClickTest."""
+        click_test = ClickTest(click_count=5)
+        assert click_test.__repr__() == "<Click Count 5>"
