@@ -8,6 +8,7 @@ from flask import (
     render_template,
     request,
     url_for,
+    jsonify,
 )
 from flask_login import login_required, login_user, logout_user
 
@@ -84,5 +85,6 @@ def click_test():
     """Click test page."""
     query_click_test = db.session.query(ClickTest).first() #TODO: Setup DB model to Store Different Buttons and their Clicks
     return render_template("public/click_test.html", query_click_test=query_click_test)
+
 
 
