@@ -2,12 +2,11 @@ from flask import Blueprint, jsonify
 
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
-from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup
 
-blueprint = Blueprint("api", __name__)
+blueprint = Blueprint("clicktest", __name__)
 
-@blueprint.route("/api/click/", methods=["POST"])
-def api_click():
+@blueprint.route("/onclick_test/", methods=["POST"])
+def on_click():
     click_test = db.session.query(ClickTest).get(1)
     if not click_test:
         click_test = ClickTest(id=1, click_count=0) # type: ignore

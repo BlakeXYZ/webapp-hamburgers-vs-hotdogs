@@ -19,7 +19,7 @@
 
 <script>
 document.getElementById('clickButton').addEventListener('click', function() {
-    fetch('/api/click/', {method: 'POST'})
+    fetch('/onclick_test/', {method: 'POST'})
         .then(response => response.json())
         .then(data => {
             if (data.click_count !== undefined) {
