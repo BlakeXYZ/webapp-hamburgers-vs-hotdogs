@@ -8,6 +8,7 @@ from webapp_hamburg_vs_hotdog.blueprints.user.models import User
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
 
 
+
 class BaseFactory(SQLAlchemyModelFactory):
     """Base factory."""
 

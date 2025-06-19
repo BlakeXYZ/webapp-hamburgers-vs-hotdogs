@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup
 
 blueprint = Blueprint("api", __name__)
 

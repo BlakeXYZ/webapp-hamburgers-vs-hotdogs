@@ -18,7 +18,6 @@ from webapp_hamburg_vs_hotdog.extensions import (
     migrate,
 )
 
-
 def create_app(config_object="webapp_hamburg_vs_hotdog.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
 
@@ -93,3 +92,7 @@ def configure_logger(app):
     handler = logging.StreamHandler(sys.stdout)
     if not app.logger.handlers:
         app.logger.addHandler(handler)
+
+
+
+
