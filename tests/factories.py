@@ -6,6 +6,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.user.models import User
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup   
 
 
 
@@ -31,6 +32,7 @@ class UserFactory(BaseFactory):
 
         model = User
 
+
 class ClickTestFactory(BaseFactory):
     """ClickTest factory."""
 
@@ -41,3 +43,25 @@ class ClickTestFactory(BaseFactory):
 
         model = ClickTest
 
+    
+class ContestantFactory(BaseFactory):
+    """Contestant factory."""
+
+    contestant_name = Sequence(lambda n: f"Contestant {n}")
+
+    class Meta:
+        """Factory configuration."""
+
+        model = Contestant
+
+
+class MatchupFactory(BaseFactory):
+    """Matchup factory."""
+
+    contestant_a = Sequence(lambda n: ContestantFactory(contestant_name=f"Contestant A {n}"))
+    contestant_b = Sequence(lambda n: ContestantFactory(contestant_name=f"Contestant B {n}"))
+
+    class Meta:
+        """Factory configuration."""
+
+        model = Matchup

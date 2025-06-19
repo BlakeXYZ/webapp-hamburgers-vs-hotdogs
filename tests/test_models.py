@@ -6,8 +6,9 @@ import pytest
 
 from webapp_hamburg_vs_hotdog.blueprints.user.models import Role, User
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup
 
-from .factories import UserFactory, ClickTestFactory
+from .factories import UserFactory, ClickTestFactory, ContestantFactory, MatchupFactory
 
 
 @pytest.mark.usefixtures("db")
@@ -95,3 +96,15 @@ class TestClickTest:
         """Check __repr__ output for ClickTest."""
         click_test = ClickTest(click_count=5)
         assert click_test.__repr__() == "<Click Count 5>"
+
+
+@pytest.mark.usefixtures("db")
+class TestMatchup:
+    """Matchup tests."""
+
+    def test_factory(self, db):
+        """Test Matchup factory."""
+        matchup = MatchupFactory()
+        db.session.commit()
+        assert matchup.contestant_a.contestant_name.startswith("Contestant A")
+        assert matchup.contestant_b.contestant_name.startswith("Contestant B")
