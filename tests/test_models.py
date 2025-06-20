@@ -101,6 +101,22 @@ class TestClickTest:
 
 
 @pytest.mark.usefixtures("db")
+class TestContestant:
+    """Contestant tests."""
+
+    def test_create_same_contestant(self, db):
+        """Test Contestant factory with same contestant name."""
+        contestant = ContestantFactory()
+        db.session.add(contestant)
+        db.session.commit()
+
+        # Attempt to create a contestant with the same name
+        with pytest.raises(sa.exc.IntegrityError):
+            ContestantFactory(contestant_name=contestant.contestant_name)
+            db.session.commit()
+
+
+@pytest.mark.usefixtures("db")
 class TestMatchup:
     """Matchup tests."""
         
@@ -148,3 +164,21 @@ class TestMatchup:
         with pytest.raises(sa.exc.IntegrityError):
             MatchupFactory(contestant_a=contestant_b, contestant_b=contestant_a)
             db.session.commit()
+
+
+    def test_matchup_repr(self, db):
+        """Check __repr__ output for Matchup."""
+        contestant_a = ContestantFactory(contestant_name="Hamburger")
+        contestant_b = ContestantFactory(contestant_name="Hotdog")
+        db.session.add_all([contestant_a, contestant_b])
+        db.session.commit()
+
+        matchup = MatchupFactory(contestant_a=contestant_a, contestant_b=contestant_b)
+        db.session.add(matchup)
+        db.session.commit()
+
+        print(f"matchup.repr ---- {matchup.__repr__()}") #using flag -s in pytest to see this output - lives inside \webapp_hamburg_vs_hotdog\commands.py > def test()
+
+        repr_str = matchup.__repr__()
+        assert "Hamburger" in repr_str
+        assert "Hotdog" in repr_str

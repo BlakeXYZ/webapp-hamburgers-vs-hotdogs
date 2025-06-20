@@ -38,6 +38,8 @@ class Matchup(Model):
 
     def __init__(self, contestant_a, contestant_b, **kwargs):
         # Extract IDs whether given objects or ints
+        # Ensure both contestants have valid IDs
+        # and sort by IDs to maintain consistency, this helps avoid duplicate matchups
         ids = [
             contestant_a.id if hasattr(contestant_a, 'id') else contestant_a,
             contestant_b.id if hasattr(contestant_b, 'id') else contestant_b,
