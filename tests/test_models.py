@@ -3,6 +3,8 @@
 import datetime as dt
 
 import pytest
+import sqlalchemy as sa
+import sqlalchemy.orm as so
 
 from webapp_hamburg_vs_hotdog.blueprints.user.models import Role, User
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
@@ -101,10 +103,48 @@ class TestClickTest:
 @pytest.mark.usefixtures("db")
 class TestMatchup:
     """Matchup tests."""
-
-    def test_factory(self, db):
-        """Test Matchup factory."""
-        matchup = MatchupFactory()
+        
+    def test_self_matchup(self, db):
+        """Test Matchup factory with same contestant for A and B."""
+        contestant = ContestantFactory()
+        db.session.add(contestant)
         db.session.commit()
-        assert matchup.contestant_a.contestant_name.startswith("Contestant A")
-        assert matchup.contestant_b.contestant_name.startswith("Contestant B")
+
+        with pytest.raises(sa.exc.IntegrityError):
+            # Attempt to create a matchup with the same contestant for both A and B
+            MatchupFactory(contestant_a=contestant, contestant_b=contestant)
+            db.session.commit()
+
+    def test_same_matchup(self, db):
+        """Test Matchup factory with same contestants."""
+        contestant_a = ContestantFactory()
+        contestant_b = ContestantFactory()
+        db.session.add_all([contestant_a, contestant_b])
+        db.session.commit()
+
+        # Create the first matchup
+        matchup1 = MatchupFactory(contestant_a=contestant_a, contestant_b=contestant_b)
+        db.session.add(matchup1)
+        db.session.commit()
+
+        # Attempt to create the same matchup again
+        with pytest.raises(sa.exc.IntegrityError):
+            MatchupFactory(contestant_a=contestant_a, contestant_b=contestant_b)
+            db.session.commit()
+    
+    def test_same_matchup_reverse(self, db):
+        """Test Matchup factory with same contestants in reverse order."""
+        contestant_a = ContestantFactory()
+        contestant_b = ContestantFactory()
+        db.session.add_all([contestant_a, contestant_b])
+        db.session.commit()
+
+        # Create the first matchup
+        matchup1 = MatchupFactory(contestant_a=contestant_a, contestant_b=contestant_b)
+        db.session.add(matchup1)
+        db.session.commit()
+
+        # Attempt to create the same matchup in reverse order
+        with pytest.raises(sa.exc.IntegrityError):
+            MatchupFactory(contestant_a=contestant_b, contestant_b=contestant_a)
+            db.session.commit()

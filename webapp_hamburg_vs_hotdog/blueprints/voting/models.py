@@ -31,6 +31,22 @@ class Contestant(Model):
 class Matchup(Model):
     """Model for a matchup between two contestants."""
     __tablename__ = 'matchup'
+    __table_args__ = (
+        sa.UniqueConstraint('contestant_a_id', 'contestant_b_id', name='uq_matchup_pair'),
+        sa.CheckConstraint('contestant_a_id != contestant_b_id', name='ck_no_self_matchup'),
+    )
+
+    def __init__(self, contestant_a, contestant_b, **kwargs):
+        # Extract IDs whether given objects or ints
+        ids = [
+            contestant_a.id if hasattr(contestant_a, 'id') else contestant_a,
+            contestant_b.id if hasattr(contestant_b, 'id') else contestant_b,
+        ]
+        if None in ids:
+            raise ValueError("Both contestants must have valid IDs or objects with an 'id' attribute.")
+        ids = sorted(ids)
+        self.contestant_a_id, self.contestant_b_id = ids
+        super().__init__(**kwargs)
 
     id:                   so.Mapped[int] = so.mapped_column(primary_key=True)
     contestant_a_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id'), index=True) 
@@ -38,6 +54,7 @@ class Matchup(Model):
 
     contestant_a:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_a', foreign_keys=[contestant_a_id])
     contestant_b:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_b', foreign_keys=[contestant_b_id])
+
 
     def __repr__(self):
         return f'<Matchup: {self.contestant_a.contestant_name} vs. {self.contestant_b.contestant_name}>'

@@ -48,6 +48,7 @@ class ContestantFactory(BaseFactory):
     """Contestant factory."""
 
     contestant_name = Sequence(lambda n: f"Contestant {n}")
+    contestant_description = Sequence(lambda n: f"Description for Contestant {n}")
 
     class Meta:
         """Factory configuration."""
@@ -58,8 +59,8 @@ class ContestantFactory(BaseFactory):
 class MatchupFactory(BaseFactory):
     """Matchup factory."""
 
-    contestant_a = Sequence(lambda n: ContestantFactory(contestant_name=f"Contestant A {n}"))
-    contestant_b = Sequence(lambda n: ContestantFactory(contestant_name=f"Contestant B {n}"))
+    contestant_a = Sequence(lambda n: ContestantFactory(contestant_name=f"Contestant A {n}", contestant_description=f"Description for Contestant A {n}"))
+    contestant_b = Sequence(lambda n: ContestantFactory(contestant_name=f"Contestant B {n}", contestant_description=f"Description for Contestant B {n}"))
 
     class Meta:
         """Factory configuration."""
