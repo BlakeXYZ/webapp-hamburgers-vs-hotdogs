@@ -20,7 +20,7 @@ from webapp_hamburg_vs_hotdog.utils import flash_errors
 
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
-from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup
+from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
@@ -91,7 +91,8 @@ def test_click():
 def test_vote():
     """Voting page."""
     contestants = db.session.query(Contestant).all()
-    return render_template("public/test_vote.html", contestants=contestants)
+    matchups = db.session.query(Matchup).all()
+    return render_template("public/test_vote.html", contestants=contestants, matchups=matchups)
 
 
 

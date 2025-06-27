@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Click Test models."""
-import datetime as dt
+from datetime import datetime, timezone
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from webapp_hamburg_vs_hotdog.database import Model, db, relationship
@@ -18,7 +18,8 @@ class Contestant(Model):
 
     matchups_as_a:      so.Mapped[list['Matchup']] = so.relationship('Matchup', back_populates='contestant_a', foreign_keys='Matchup.contestant_a_id')
     matchups_as_b:      so.Mapped[list['Matchup']] = so.relationship('Matchup', back_populates='contestant_b', foreign_keys='Matchup.contestant_b_id')
-    
+    votes:              so.Mapped[list['Vote']] = so.relationship('Vote', back_populates='contestant', cascade='all, delete-orphan')
+
     @property
     def all_matchups(self):
         """Return all matchups involving this contestant."""
@@ -56,12 +57,51 @@ class Matchup(Model):
 
     contestant_a:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_a', foreign_keys=[contestant_a_id])
     contestant_b:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_b', foreign_keys=[contestant_b_id])
-
+    votes:            so.Mapped[list['Vote']] = so.relationship('Vote', back_populates='matchup', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Matchup: {self.contestant_a.contestant_name} vs. {self.contestant_b.contestant_name}>'
 
-    
 
-# class Vote(Base):
-#     """Model for a vote in a matchup."""
+class Vote(Model):
+    """Model for a vote in a matchup."""
+    __tablename__ = 'vote'
+    __table_args__ = (
+        sa.UniqueConstraint('matchup_id', 'session_id', name='uq_vote_matchup_session'),
+    )
+
+    def __init__(self, matchup, contestant, **kwargs):
+        # Accept either objects or IDs
+        matchup_id = matchup.id if hasattr(matchup, 'id') else matchup
+        contestant_id = contestant.id if hasattr(contestant, 'id') else contestant
+
+        # Fetch matchup if only ID is given
+        if not hasattr(matchup, 'contestant_a_id'):
+            matchup_obj = Matchup.query.get(matchup_id)
+        else:
+            matchup_obj = matchup
+
+        # Validation: contestant must be in matchup
+        if contestant_id not in [matchup_obj.contestant_a_id, matchup_obj.contestant_b_id]:
+            raise ValueError("Contestant must be part of the matchup.")
+
+        self.matchup_id = matchup_id
+        self.contestant_id = contestant_id
+        super().__init__(**kwargs)
+
+    id:                        so.Mapped[int] = so.mapped_column(primary_key=True)
+    matchup_id:                so.Mapped[int] = so.mapped_column(sa.ForeignKey('matchup.id'), index=True)
+    contestant_id:             so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id'), index=True)
+    session_id:                so.Mapped[str] = so.mapped_column(sa.String(64), index=True, nullable=False)
+    country_code:              so.Mapped[str] = so.mapped_column(sa.String(2), index=True, nullable=False) # ISO 3166-1 alpha-2 country code
+    timestamp:                 so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
+
+    contestant:                so.Mapped[Contestant] = relationship('Contestant', back_populates='votes')
+    matchup:                   so.Mapped[Matchup] = relationship('Matchup', back_populates='votes')
+
+    def __repr__(self):
+        return f'<A Vote for {self.contestant.contestant_name} in {self.matchup}>'
+
+
+
+    

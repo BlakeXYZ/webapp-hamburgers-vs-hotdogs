@@ -15,6 +15,23 @@
                 </ul>
 
 
+            <h4>Matchups</h4>
+            <ul>
+                {% for matchup in matchups %}
+                <br>
+                <button id="clickButton" class="btn btn-primary">{{ matchup.contestant_a.contestant_name }}</button>
+                vs.
+                <button id="clickButton" class="btn btn-primary">{{ matchup.contestant_b.contestant_name }}</button>
+                <br>
+                <br>
+                <p>Total Votes: {{ matchup.votes|length }}</p>
+                <p>Votes for {{ matchup.contestant_a.contestant_name }}: {{ matchup.votes | selectattr('contestant_id', 'equalto', matchup.contestant_a_id) | list | length }} </p>
+                <p>Votes for {{ matchup.contestant_b.contestant_name }}: {{ matchup.votes | selectattr('contestant_id', 'equalto', matchup.contestant_b_id) | list | length }} </p>
+                <p>Votes: {{ matchup.votes }}</p>
+                {% endfor %}
+            </ul>
+
+
             <br>
         </div>
     </div>
