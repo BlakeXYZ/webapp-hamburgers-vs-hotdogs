@@ -5,6 +5,6 @@ from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchu
 
 blueprint = Blueprint("voting", __name__)
 
-@blueprint.route("/cast_vote/", methods=["POST"])
-def on_vote_click():
+@blueprint.route("/on_click_vote/", methods=["POST"])
+def on_click_vote():
     pass
