@@ -1,5 +1,4 @@
-from flask import Blueprint, jsonify
-from flask import request
+from flask import Blueprint, jsonify, request
 
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote
