@@ -17,17 +17,5 @@
 </div>
 
 
-<script>
-document.getElementById('clickButton').addEventListener('click', function() {
-    fetch('/onclick_test/', {method: 'POST'})
-        .then(response => response.json())
-        .then(data => {
-            if (data.click_count !== undefined) {
-                document.getElementById('clickCount').textContent = 'Total Clicks: ' + data.click_count;
-            }
-        });
-});
-</script>
-
-
+<script src="{{ url_for('static', filename='js/test_click.js') }}"></script>
 {% endblock %}

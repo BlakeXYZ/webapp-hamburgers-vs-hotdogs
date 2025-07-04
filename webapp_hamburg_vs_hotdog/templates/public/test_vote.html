@@ -57,36 +57,5 @@
     </div>
 </div>
 
-
-<script>
-    document.querySelectorAll('.vote-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-
-            console.log('Button clicked', this.dataset);
-
-            fetch('/on_click_vote/', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    matchup_id: this.dataset.matchupId,
-                    contestant_id: this.dataset.contestantId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Update the vote counts in the DOM
-                document.getElementById('total-votes-' + data.matchup_id).textContent =
-                    'Total Votes: ' + data.total_votes;
-                document.getElementById('votes-a-' + data.matchup_id).textContent =
-                    'Votes for ' + data.contestant_a_name + ': ' + data.votes_a;
-                document.getElementById('votes-b-' + data.matchup_id).textContent =
-                    'Votes for ' + data.contestant_b_name + ': ' + data.votes_b;
-            });
-        });
-    });
-</script>
-
-
-
-
+<script src="{{ url_for('static', filename='js/test_vote.js') }}"></script>
 {% endblock %}

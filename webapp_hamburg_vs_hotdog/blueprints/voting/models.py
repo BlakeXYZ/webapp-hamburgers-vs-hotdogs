@@ -95,6 +95,7 @@ class Vote(Model):
     session_id:                so.Mapped[str] = so.mapped_column(sa.String(64), index=True, nullable=False)
     country_code:              so.Mapped[str] = so.mapped_column(sa.String(2), index=True, nullable=False) # ISO 3166-1 alpha-2 country code
     timestamp:                 so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
+    #TODO: add region code + timestamp logic
 
     contestant:                so.Mapped[Contestant] = relationship('Contestant', back_populates='votes')
     matchup:                   so.Mapped[Matchup] = relationship('Matchup', back_populates='votes')

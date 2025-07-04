@@ -10,12 +10,14 @@ def on_click_vote():
     data = request.get_json()
     matchup_id = int(data['matchup_id'])
     contestant_id = int(data['contestant_id'])
+    session_id = str(data['session_id'])
+    region_code = str(data['region_code'])
 
     #TODO: allow for session user to switch vote, but only vote once per session
     db.session.add(Vote(matchup=matchup_id,
                         contestant=contestant_id,
-                        session_id=3,
-                        country_code="DE" ))
+                        session_id=session_id,
+                        country_code=region_code ))
     db.session.commit()
 
     matchup = Matchup.query.get(matchup_id)
