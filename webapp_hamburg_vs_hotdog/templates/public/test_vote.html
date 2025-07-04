@@ -35,7 +35,11 @@
                     >
                     {{ matchup.contestant_b.contestant_name }}
                     </button>
+
                     <br><br>
+                    <div id="action-message-{{ matchup.id }}">.</div>
+                    <br>
+
                     <p id="total-votes-{{ matchup.id }}">
                     Total Votes: {{ matchup.votes|length }}
                     </p>

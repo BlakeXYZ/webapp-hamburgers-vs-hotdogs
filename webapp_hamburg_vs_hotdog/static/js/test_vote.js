@@ -10,12 +10,29 @@ function getSessionId() {
 }
 
 function getGeoIpInfo() {
+    const cacheKey = 'geoip_info';
+    const cacheTTL = 24 * 60 * 60 * 1000; // 24 hours in ms
+
+    // Try to get cached value
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < cacheTTL) {
+            return Promise.resolve(data);
+        }
+    }
+
+    // If not cached or expired, fetch and cache
     return fetch('https://ipapi.co/json/')
         .then(response => response.json())
-        .then(data => ({
-            region_code: data.region_code,
-            country_code: data.country_code
-        }));
+        .then(data => {
+            const geo = {
+                region_code: data.region_code,
+                country_code: data.country_code
+            };
+            localStorage.setItem(cacheKey, JSON.stringify({ data: geo, timestamp: Date.now() }));
+            return geo;
+        });
 }
 
 
@@ -27,11 +44,7 @@ function setupVoteButtons() {
         button.addEventListener('click', async function() {
 
             const sessionId = getSessionId();
-            const geoInfo = await getGeoIpInfo();
-
-            // console.log('Button clicked', this.dataset);
-            // console.log('Session ID:', sessionId);
-            // console.log('Geo Info:', geoInfo);
+            // const geoInfo = await getGeoIpInfo(); 
             
             fetch('/on_click_vote/', {
                 method: 'POST',
@@ -40,8 +53,8 @@ function setupVoteButtons() {
                     matchup_id: this.dataset.matchupId,
                     contestant_id: this.dataset.contestantId,
                     session_id: sessionId,
-                    region_code: geoInfo.region_code,
-                    country_code: geoInfo.country_code,
+                    // region_code: geoInfo.region_code,
+                    // country_code: geoInfo.country_code,
                 })
             })
             .then(response => response.json())
@@ -53,6 +66,13 @@ function setupVoteButtons() {
                     'Votes for ' + data.contestant_a_name + ': ' + data.votes_a;
                 document.getElementById('votes-b-' + data.matchup_id).textContent =
                     'Votes for ' + data.contestant_b_name + ': ' + data.votes_b;
+                
+
+                const msgDiv = document.getElementById('action-message-' + data.matchup_id);
+                // Optionally, update the action message
+                msgDiv.textContent = data.message;
+                msgDiv.style.opacity = 1;
+                setTimeout(() => {msgDiv.style.opacity = 0.2;}, 2000);
             });
         });
     });
