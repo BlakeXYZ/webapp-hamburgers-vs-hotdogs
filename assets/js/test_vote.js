@@ -1,5 +1,36 @@
+import confetti from 'canvas-confetti';
 
-    
+var scalar = 2;
+var blue = confetti.shapeFromText({ text: '💙', scalar });
+var red = confetti.shapeFromText({ text: '❤️', scalar });
+
+var defaults = {
+  spread: 360,
+  ticks: 60,
+  gravity: 0,
+  decay: 0.96,
+  startVelocity: 5,
+  scalar
+};
+
+function confetti_blue() {
+  confetti({
+    ...defaults,
+    particleCount: 5,
+    shapes: [blue],
+    flat: true
+  });
+}
+
+function confetti_red() {
+  confetti({
+    ...defaults,
+    particleCount: 5,
+    shapes: [red],
+    flat: true
+  });
+}
+
 function getSessionId() {
   let sessionId = localStorage.getItem('session_id');
   if (!sessionId) {
@@ -90,6 +121,25 @@ function setupVoteButtons() {
                 msgDiv.textContent = data.message;
                 msgDiv.style.opacity = 1;
                 setTimeout(() => {msgDiv.style.opacity = 0.2;}, 2000);
+
+                // Trigger confetti only if message does NOT contain "removed" and A is pressed
+                if (
+                    typeof data.message === 'string' &&
+                    !data.message.toLowerCase().includes('removed') &&
+                    this.classList.contains('bg-primary')
+                ) {
+                    console.log("Vote for A registered, firing confetti!");
+                    confetti_blue();
+                }
+                // Trigger confetti only if message does NOT contain "removed" and B is pressed
+                if (
+                    typeof data.message === 'string' &&
+                    !data.message.toLowerCase().includes('removed') &&
+                    this.classList.contains('bg-danger')
+                ) {
+                    console.log("Vote for B registered, firing confetti!");
+                    confetti_red();
+                }
             });
         });
     });
