@@ -92,6 +92,12 @@ def test_vote():
     """Voting page."""
     contestants = db.session.query(Contestant).all()
     matchups = db.session.query(Matchup).all()
+    for matchup in matchups:
+        votes_a = sum(1 for v in matchup.votes if v.contestant_id == matchup.contestant_a_id)
+        votes_b = sum(1 for v in matchup.votes if v.contestant_id == matchup.contestant_b_id)
+        total = votes_a + votes_b
+        matchup.percent_a = (votes_a / total * 100) if total > 0 else 50
+        matchup.percent_b = (votes_b / total * 100) if total > 0 else 50
     return render_template("public/test_vote.html", contestants=contestants, matchups=matchups)
 
 

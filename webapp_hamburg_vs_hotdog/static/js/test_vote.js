@@ -69,6 +69,23 @@ function setupVoteButtons() {
                 
 
                 const msgDiv = document.getElementById('action-message-' + data.matchup_id);
+
+                // Update progress bars
+                document.querySelector(
+                    '#matchup-' + data.matchup_id + ' .progress-bar.bg-primary'
+                ).style.width = data.percent_a + '%';
+                document.querySelector(
+                    '#matchup-' + data.matchup_id + ' .progress-bar.bg-primary'
+                ).textContent = data.percent_a.toFixed(1) + '%';
+
+                document.querySelector(
+                    '#matchup-' + data.matchup_id + ' .progress-bar.bg-danger'
+                ).style.width = data.percent_b + '%';
+                document.querySelector(
+                    '#matchup-' + data.matchup_id + ' .progress-bar.bg-danger'
+                ).textContent = data.percent_b.toFixed(1) + '%';
+
+
                 // Optionally, update the action message
                 msgDiv.textContent = data.message;
                 msgDiv.style.opacity = 1;

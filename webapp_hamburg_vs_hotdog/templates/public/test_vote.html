@@ -21,7 +21,7 @@
                 <br>
                 <div class="matchup-block" id="matchup-{{ matchup.id }}">
                     <button
-                    class="btn btn-primary vote-btn"
+                    class="btn vote-btn bg-primary"
                     data-matchup-id="{{ matchup.id }}"
                     data-contestant-id="{{ matchup.contestant_a_id }}"
                     >
@@ -29,7 +29,7 @@
                     </button>
                     vs.
                     <button
-                    class="btn btn-primary vote-btn"
+                    class="btn vote-btn bg-danger"
                     data-matchup-id="{{ matchup.id }}"
                     data-contestant-id="{{ matchup.contestant_b_id }}"
                     >
@@ -40,17 +40,34 @@
                     <div id="action-message-{{ matchup.id }}">.</div>
                     <br>
 
+                    <div class="progress" style="height: 2rem;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+                            style="width: {{ matchup.percent_a }}%"
+                            aria-valuenow="{{ matchup.percent_a }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ matchup.percent_a|round(1) }}%
+                        </div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar"
+                            style="width: {{ matchup.percent_b }}%"
+                            aria-valuenow="{{ matchup.percent_b }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ matchup.percent_b|round(1) }}%
+                        </div>
+                    </div>
+
+                    <br>
+
                     <p id="total-votes-{{ matchup.id }}">
-                    Total Votes: {{ matchup.votes|length }}
+                        Total Votes: {{ matchup.votes|length }}
                     </p>
                     <p id="votes-a-{{ matchup.id }}">
-                    Votes for {{ matchup.contestant_a.contestant_name }}:
-                    {{ matchup.votes | selectattr('contestant_id', 'equalto', matchup.contestant_a_id) | list | length }}
+                        Votes for {{ matchup.contestant_a.contestant_name }}:
+                        {{ matchup.votes | selectattr('contestant_id', 'equalto', matchup.contestant_a_id) | list | length }}
                     </p>
                     <p id="votes-b-{{ matchup.id }}">
-                    Votes for {{ matchup.contestant_b.contestant_name }}:
-                    {{ matchup.votes | selectattr('contestant_id', 'equalto', matchup.contestant_b_id) | list | length }}
+                        Votes for {{ matchup.contestant_b.contestant_name }}:
+                        {{ matchup.votes | selectattr('contestant_id', 'equalto', matchup.contestant_b_id) | list | length }}
                     </p>
+
+
                 </div>
                 {% endfor %}
             </ul>

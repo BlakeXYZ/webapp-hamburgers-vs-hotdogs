@@ -47,6 +47,8 @@ def on_click_vote():
         total_votes=len(matchup.votes),
         votes_a=votes_a,
         votes_b=votes_b,
+        percent_a=(votes_a / len(matchup.votes) * 100) if len(matchup.votes) > 0 else 50,
+        percent_b=(votes_b / len(matchup.votes) * 100) if len(matchup.votes) > 0 else 50,
         contestant_a_name=matchup.contestant_a.contestant_name,
         contestant_b_name=matchup.contestant_b.contestant_name,
         message=message,    
