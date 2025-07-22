@@ -13,9 +13,6 @@ services:
       - "--entryPoints.websecure.address=:443"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-
-    networks:
-      - webnet
     ports:
       - mode: host
         protocol: tcp
@@ -28,6 +25,8 @@ services:
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - webnet
 
   web:
     image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
@@ -37,7 +36,6 @@ services:
       - "traefik.http.routers.web.rule=Host(`hamburgersvshotdogs.com`)"
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.tls.certresolver=myresolver"
-
     networks: 
       - webnet
     secrets:
@@ -66,10 +64,10 @@ services:
   db:
     image: postgres
     user: postgres
-    networks:
-      - webnet
     volumes:
       - db-data:/var/lib/postgresql/data
+    networks:
+      - webnet
     secrets:
       - db-password
     environment:
