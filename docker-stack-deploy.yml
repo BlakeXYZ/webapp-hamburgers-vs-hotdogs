@@ -9,10 +9,13 @@ services:
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.myresolver.acme.email=blakexyz@proton.me"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--entrypoints.web.address=0.0.0.0:80"
-      - "--entryPoints.websecure.address=0.0.0.0:443"
+      - "--entrypoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+
+    networks:
+      - webnet
     ports:
       - mode: host
         protocol: tcp
@@ -28,14 +31,15 @@ services:
 
   web:
     image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
-    ports:
-      - "8080:5000"  # Map port 8080 on the host to port 5000 in the container
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.web.loadbalancer.server.port=5000"
       - "traefik.http.routers.web.rule=Host(`hamburgersvshotdogs.com`)"
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.tls.certresolver=myresolver"
+
+    networks: 
+      - webnet
     secrets:
       - db-password
     environment:
@@ -82,3 +86,6 @@ volumes:
 secrets:
   db-password:
     external: true
+
+networks:
+  webnet:
