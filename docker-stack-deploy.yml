@@ -66,6 +66,8 @@ services:
   db:
     image: postgres
     user: postgres
+    networks:
+      - webnet
     volumes:
       - db-data:/var/lib/postgresql/data
     secrets:
