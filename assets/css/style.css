@@ -2,6 +2,9 @@
    App specific CSS file.
    ========================================================================== */
 
+@import "~swiper/css/bundle";
+
+
 /* universal */
 
 html {
