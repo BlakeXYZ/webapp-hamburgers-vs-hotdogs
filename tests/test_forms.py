@@ -2,7 +2,7 @@
 """Test forms."""
 
 from webapp_hamburg_vs_hotdog.public.forms import LoginForm
-from webapp_hamburg_vs_hotdog.user.forms import RegisterForm
+from webapp_hamburg_vs_hotdog.blueprints.user.forms import RegisterForm
 
 
 class TestRegisterForm:

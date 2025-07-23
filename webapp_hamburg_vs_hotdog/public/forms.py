@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField
 from wtforms.validators import DataRequired
 
-from webapp_hamburg_vs_hotdog.user.models import User
+from webapp_hamburg_vs_hotdog.blueprints.user.models import User
 
 
 class LoginForm(FlaskForm):

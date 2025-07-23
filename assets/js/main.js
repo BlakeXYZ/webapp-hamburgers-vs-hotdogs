@@ -18,3 +18,5 @@ require.context(
 // Your own code
 require("./plugins");
 require("./script");
+require('./test_click.js');
+require('./test_vote.js');

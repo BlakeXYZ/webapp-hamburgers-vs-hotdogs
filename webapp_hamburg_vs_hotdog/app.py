@@ -5,7 +5,8 @@ import sys
 
 from flask import Flask, render_template
 
-from webapp_hamburg_vs_hotdog import commands, public, api, user
+from webapp_hamburg_vs_hotdog import commands, public
+from webapp_hamburg_vs_hotdog.blueprints import user, click_test, voting
 from webapp_hamburg_vs_hotdog.extensions import (
     bcrypt,
     cache,
@@ -16,7 +17,6 @@ from webapp_hamburg_vs_hotdog.extensions import (
     login_manager,
     migrate,
 )
-
 
 def create_app(config_object="webapp_hamburg_vs_hotdog.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -50,10 +50,13 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(api.views.blueprint)
     app.register_blueprint(user.views.blueprint)
-    # Exempt the API blueprint from CSRF protection
-    csrf_protect.exempt(api.views.blueprint)    
+    app.register_blueprint(click_test.views.blueprint)
+    app.register_blueprint(voting.views.blueprint)
+    # Exempt blueprints from CSRF protection
+    csrf_protect.exempt(click_test.views.blueprint)
+    csrf_protect.exempt(voting.views.blueprint)
+
     return None
 
 
@@ -92,3 +95,7 @@ def configure_logger(app):
     handler = logging.StreamHandler(sys.stdout)
     if not app.logger.handlers:
         app.logger.addHandler(handler)
+
+
+
+

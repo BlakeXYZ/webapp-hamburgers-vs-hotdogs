@@ -25,11 +25,13 @@ TEST_PATH = os.path.join(PROJECT_ROOT, "tests")
     default=None,
     help="Filter tests by keyword expressions",
 )
+
+
 def test(coverage, filter):
     """Run the tests."""
     import pytest
 
-    args = [TEST_PATH, "--verbose"]
+    args = ["-s", TEST_PATH, "--verbose"]
     if coverage:
         args.append("--cov=webapp_hamburg_vs_hotdog")
     if filter:

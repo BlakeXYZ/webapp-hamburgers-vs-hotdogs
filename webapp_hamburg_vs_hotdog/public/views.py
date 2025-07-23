@@ -14,12 +14,13 @@ from flask_login import login_required, login_user, logout_user
 
 from webapp_hamburg_vs_hotdog.extensions import login_manager
 from webapp_hamburg_vs_hotdog.public.forms import LoginForm
-from webapp_hamburg_vs_hotdog.user.forms import RegisterForm
-from webapp_hamburg_vs_hotdog.user.models import User
+from webapp_hamburg_vs_hotdog.blueprints.user.forms import RegisterForm
+from webapp_hamburg_vs_hotdog.blueprints.user.models import User
 from webapp_hamburg_vs_hotdog.utils import flash_errors
 
 from webapp_hamburg_vs_hotdog.database import db
-from webapp_hamburg_vs_hotdog.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
+from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
@@ -80,11 +81,24 @@ def about():
     form = LoginForm(request.form)
     return render_template("public/about.html", form=form)
 
-@blueprint.route("/click_test/")
-def click_test():
+@blueprint.route("/test_click/")
+def test_click():
     """Click test page."""
     query_click_test = db.session.query(ClickTest).first() #TODO: Setup DB model to Store Different Buttons and their Clicks
-    return render_template("public/click_test.html", query_click_test=query_click_test)
+    return render_template("public/test_click.html", query_click_test=query_click_test)
+
+@blueprint.route("/test_vote/")
+def test_vote():
+    """Voting page."""
+    contestants = db.session.query(Contestant).all()
+    matchups = db.session.query(Matchup).all()
+    for matchup in matchups:
+        votes_a = sum(1 for v in matchup.votes if v.contestant_id == matchup.contestant_a_id)
+        votes_b = sum(1 for v in matchup.votes if v.contestant_id == matchup.contestant_b_id)
+        total = votes_a + votes_b
+        matchup.percent_a = (votes_a / total * 100) if total > 0 else 50
+        matchup.percent_b = (votes_b / total * 100) if total > 0 else 50
+    return render_template("public/test_vote.html", contestants=contestants, matchups=matchups)
 
 
 
