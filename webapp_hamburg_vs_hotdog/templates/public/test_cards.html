@@ -1,140 +1,180 @@
-
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 
 <style>
+  .swiper-container {
+    overflow: hidden;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 25px 10px;
+  }
 
+  .swiper {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    overflow: visible;
+  }
+  .swiper-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    overflow: visible;
+  }
 
+  .matchup-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .slide-contestant {
+    width: 90vw; /* Responsive width for mobile */
+    max-width: 300px; /* Limit on desktop */
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    margin: 1vw;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2%;
+  }
 
- 
+  .slide-contestant-img-container {
+    width: 100%;
+    aspect-ratio: 1/1; /* Square image area */
+    border-radius: 18px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2%;
+  }
 
-      .swiper-container {
-        overflow: hidden;
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-        height: 100%;
-        padding: 25px 10px;
-      }
+  .slide-overlay {
+    position: absolute;
+    top: 30%; /* adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12%;
+    max-width: 85px;
+    aspect-ratio: 1/1; /* Square image area */
+    background: #ffffff; /* solid color, e.g. Bootstrap warning */
+    border-radius: 8px;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.25rem;
+  }
 
-      .swiper {
-        width: 100%;
-        height: 100%;
-        min-height: 400px;
-        overflow: visible;
-      }
-      .swiper-slide {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 18px;
-        overflow: visible;
-      }
-
-      .slide-contestant {
-        width: 90vw;           /* Responsive width for mobile */
-        max-width: 300px;      /* Limit on desktop */
-        aspect-ratio: 2/3;     /* Keeps height proportional to width */
-        background: #fff;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        margin: 1vw;
-        border-radius: 18px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        padding: 2%;
-      }
-
-      .slide-contestant-img-container {
-        width: 100%;
-        aspect-ratio: 1/1;     /* Square image area */
-        border-radius: 18px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 2%;
-        
-      }
-
-
+  @media (min-width: 576px) {
+    /* Bootstrap sm breakpoint */
     .slide-overlay {
-      position: absolute;
-      top: 30%;      /* adjust as needed */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 12%;
-      max-width: 85px;
-      aspect-ratio: 1/1;     /* Square image area */
-      background: #ffffff; /* solid color, e.g. Bootstrap warning */
-      border-radius: 8px;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.25rem;
+      font-size: 2rem;
     }
+  }
 
-    @media (min-width: 576px) { /* Bootstrap sm breakpoint */
-      .slide-overlay {
-        font-size: 2rem;
-      }
-    }
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: #00000043;
+    height: 275px;
+    scale: 0.75;
+  }
 
-      .swiper-button-next,
-      .swiper-button-prev {
-        color: #00000043;
-        height: 95%;
-      }
-
-
+  .collapse_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 20px;
+  }
 </style>
+
+{% macro collapse_button(btn_text, collapse_container_name, collapse_id, body_text) %}
+<div class="container {{ collapse_container_name }}">
+  <button
+    class="btn btn-primary"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#{{ collapse_id }}"
+    aria-expanded="false"
+    aria-controls="{{ collapse_id }}"
+  >
+    {{ btn_text }}
+  </button>
+  <div class="collapse mt-2" id="{{ collapse_id }}">
+    <div class="card card-body fw-light">
+      {{ body_text }}
+    </div>
+  </div>
+</div>
+{% endmacro %}
 
 
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-
-            <h1>Test Cards</h1>
-
-        </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Test Cards</h1>
     </div>
+  </div>
 </div>
-            <div class="swiper-container">
 
-                <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
 
-                {% for i in range(5) %}
-                <div class="swiper-slide">
-                    <div class="slide-overlay">
-                        <span>VS.</span>
-                    </div>
-                    <div class="slide-contestant">
-                        <div class="slide-contestant-img-container bg-primary">
-                        ☒
-                        </div>
-                        <h6 class="text-center">Contestant A</h6>
-                        <p class="fw-light">Contestant description text goes here wooo!</p>
-                      </div>
-                      <div class="slide-contestant">
-                        <div class="slide-contestant-img-container bg-danger">
-                        ☒
-                        </div>
-                        <h6 class="text-center">Contestant B</h6>
-                        <p class="fw-light">Contestant description text goes here :0</p>
-                      </div>
-                    </div>
-                {% endfor %}             
-                </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                </div>
-            </div>
+<div class="swiper-container">
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
+      {% for i in range(5) %} 
+      {% set color_a = colors | random %} 
+      {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
 
+      <div class="swiper-slide">
+
+
+        <div class="container matchup-container">
+          <div class="slide-overlay">
+            <span>VS.</span>
+          </div>
+          
+          <button type="button" class="slide-contestant btn" data-bs-toggle="button">
+            <div class="slide-contestant-img-container {{ color_a }}">☒</div>
+            <h6 class="text-center">Contestant A</h6>
+            <p class="fw-light">Contestant description text goes here woooooo! <br> more text here!</p>
+          </button>
+
+          <button type="button" class="slide-contestant btn" data-bs-toggle="button">
+            <div class="slide-contestant-img-container {{ color_b }}">☒</div>
+            <h6 class="text-center">Contestant B</h6>
+            <p class="fw-light">Contestant description text goes here :0</p>
+          </button>
+        </div>
+
+
+        {{ collapse_button('Button with data-bs-target', 'collapse_container', 'collapseExample' ~ i, 'Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.') }}
+
+
+      </div>
+
+
+      {% endfor %}
+    </div>
+    
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+
+
+</div>
 
 {% endblock %}

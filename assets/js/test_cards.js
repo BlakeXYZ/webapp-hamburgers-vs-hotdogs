@@ -5,7 +5,7 @@ import Swiper from 'swiper/bundle';
 
 var swiper = new Swiper(".mySwiper", {
     effect: "cards",
-    grabCursor: true,
+    grabCursor: false,
     speed: 500, // Slide transition speed in ms
     rewind: true,
     navigation: {
