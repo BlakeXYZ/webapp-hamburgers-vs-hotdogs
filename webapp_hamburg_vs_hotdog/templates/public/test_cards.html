@@ -59,6 +59,31 @@
       }
 
 
+    .slide-overlay {
+      position: absolute;
+      top: 30%;      /* adjust as needed */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12%;
+      max-width: 85px;
+      aspect-ratio: 1/1;     /* Square image area */
+      background: #ffffff; /* solid color, e.g. Bootstrap warning */
+      border-radius: 8px;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+
+    @media (min-width: 576px) { /* Bootstrap sm breakpoint */
+      .slide-overlay {
+        font-size: 2rem;
+      }
+    }
+
       .swiper-button-next,
       .swiper-button-prev {
         color: #00000043;
@@ -86,7 +111,10 @@
 
                 {% for i in range(5) %}
                 <div class="swiper-slide">
-                      <div class="slide-contestant">
+                    <div class="slide-overlay">
+                        <span>VS.</span>
+                    </div>
+                    <div class="slide-contestant">
                         <div class="slide-contestant-img-container bg-primary">
                         ☒
                         </div>
