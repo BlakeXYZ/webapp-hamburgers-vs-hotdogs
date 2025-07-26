@@ -21,5 +21,31 @@ var swiper = new Swiper(".mySwiper", {
 });
 
 
+function updateStatsContent() {
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const stats = activeSlide ? activeSlide.getAttribute('data-stats') : '';
+    document.getElementById('view-stats-collapse-id-content').textContent = stats;
+}
+
+function collapseViewStats() {
+    // Only collapse if currently expanded
+    const collapseEl = document.getElementById('view-stats-collapse-id');
+    if (collapseEl.classList.contains('show')) {
+        collapseEl.classList.remove('show');
+    }
+}
+
+swiper.on('slideChange', function () {
+    updateStatsContent();
+    collapseViewStats();
+});
+
+// Initialize stats content on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateStatsContent();
+    console.log('Slide changed to index:', swiper.activeIndex);
+});
+
 // Ensure Swiper is available globally
 window.swiper = swiper;

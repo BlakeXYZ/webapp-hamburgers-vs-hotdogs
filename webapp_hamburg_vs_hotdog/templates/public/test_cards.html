@@ -87,33 +87,42 @@
   .swiper-button-next,
   .swiper-button-prev {
     color: #00000043;
-    height: 275px;
+    top: unset;
+    height: unset;
+    margin-top: unset;
+    bottom: unset;
     scale: 0.75;
+
   }
 
+
+
+
   .collapse_container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 20px;
+
   }
 </style>
 
 {% macro collapse_button(btn_text, collapse_container_name, collapse_id, body_text) %}
 <div class="container {{ collapse_container_name }}">
-  <button
-    class="btn btn-primary"
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#{{ collapse_id }}"
-    aria-expanded="false"
-    aria-controls="{{ collapse_id }}"
-  >
-    {{ btn_text }}
-  </button>
-  <div class="collapse mt-2" id="{{ collapse_id }}">
-    <div class="card card-body fw-light">
+
+  <div class="container d-flex justify-content-center align-items-center  mt-3">
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+
+    <button
+      class="btn btn-primary btn-sm"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#{{ collapse_id }}"
+      aria-expanded="false"
+      aria-controls="{{ collapse_id }}"
+    >
+      {{ btn_text }}
+    </button>
+   </div> 
+  <div class="collapse mt-3" id="{{ collapse_id }}">
+    <div class="card card-body fw-light" id="{{ collapse_id }}-content">
       {{ body_text }}
     </div>
   </div>
@@ -139,10 +148,10 @@
       {% set color_a = colors | random %} 
       {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
 
-      <div class="swiper-slide">
+      <div class="swiper-slide" data-stats="Stats for matchup {{ i }}">
 
 
-        <div class="container matchup-container">
+        <div class="matchup-container">
           <div class="slide-overlay">
             <span>VS.</span>
           </div>
@@ -150,18 +159,17 @@
           <button type="button" class="slide-contestant btn" data-bs-toggle="button">
             <div class="slide-contestant-img-container {{ color_a }}">☒</div>
             <h6 class="text-center">Contestant A</h6>
-            <p class="fw-light">Contestant description text goes here woooooo! <br> more text here!</p>
+            <p class="fw-light text-start">Matchup {{ i }} <br> Description text goes here <br> more text here</p>
           </button>
 
           <button type="button" class="slide-contestant btn" data-bs-toggle="button">
             <div class="slide-contestant-img-container {{ color_b }}">☒</div>
             <h6 class="text-center">Contestant B</h6>
-            <p class="fw-light">Contestant description text goes here :0</p>
+            <p class="fw-light text-start">Matchup {{ i }} <br> Description text goes here</p>
           </button>
         </div>
 
 
-        {{ collapse_button('Button with data-bs-target', 'collapse_container', 'collapseExample' ~ i, 'Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.') }}
 
 
       </div>
@@ -170,8 +178,9 @@
       {% endfor %}
     </div>
     
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
+        {{ collapse_button('View Stats', 'view-stats-container', 'view-stats-collapse-id', 'Placeholder Text') }}
+
+
   </div>
 
 
