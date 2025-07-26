@@ -29,11 +29,9 @@ function updateStatsContent() {
 }
 
 function collapseViewStats() {
-    // Only collapse if currently expanded
-    const collapseEl = document.getElementById('view-stats-collapse-id');
-    if (collapseEl.classList.contains('show')) {
-        collapseEl.classList.remove('show');
-    }
+    const collapseContent = document.getElementById('view-stats-collapse-id');
+    collapseContent.classList.add('collapse');
+    collapseContent.classList.remove('show');
 }
 
 swiper.on('slideChange', function () {
