@@ -20,4 +20,6 @@ require("./plugins");
 require("./script");
 require('./test_click.js');
 require('./test_vote.js');
-require('./test_cards.js');
+require('./vote_confetti.js');
+require('./vote_stats.js');
+require('./vote_swiper.js');
