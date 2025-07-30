@@ -28,3 +28,8 @@ Download Microsoft's extension: Container Tools
 - Create Connection
 - Select SQLite
 - Select Path to Local project environment's dev.db
+
+---
+### How to push webpack js changes in local dev env
+### in powershell run:
+npm run build:win3 

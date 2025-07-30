@@ -1,0 +1,90 @@
+{% extends "layout.html" %} {% block content %}
+
+
+
+{% macro matchup_stats_container() %}
+<div class="container matchup-stats-container">
+
+  <div class="container d-flex justify-content-center align-items-center mt-3">
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+
+    <button
+      class="btn btn-primary btn-sm"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#matchup-stats-collapse"
+      aria-expanded="false"
+      aria-controls="matchup-stats-collapse"
+    >
+      View Stats
+    </button>
+  </div> 
+
+  <div class="collapse mt-3" id="matchup-stats-collapse">
+    <div class="card card-body fw-light" id="matchup-stats-collapse-content">
+      Placeholder Text
+    </div>
+  </div>
+
+</div>
+{% endmacro %}
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Test Cards</h1>
+    </div>
+  </div>
+</div>
+
+
+<div class="swiper-container">
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
+      {% for i in range(5) %} 
+      {% set color_a = colors | random %} 
+      {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
+
+      <div class="swiper-slide" data-stats="Stats for matchup {{ i }}">
+
+
+        <div class="matchup-container">
+          <div class="matchup-vs-text-overlay">
+            <span>VS.</span>
+          </div>
+
+          <button type="button" class="matchup-contestant btn" data-bs-toggle="button">
+            <div class="matchup-contestant-img-container {{ color_a }}">☒</div>
+            <h6 class="text-center">Contestant A</h6>
+            <p class="fw-light text-start">Matchup {{ i }} <br> Description text goes here <br> more text here</p>
+          </button>
+
+          <button type="button" class="matchup-contestant btn" data-bs-toggle="button">
+            <div class="matchup-contestant-img-container {{ color_b }}">☒</div>
+            <h6 class="text-center">Contestant B</h6>
+            <p class="fw-light text-start">Matchup {{ i }} <br> Description text goes here</p>
+          </button>
+        </div>
+
+
+
+
+      </div>
+
+
+      {% endfor %}
+    </div>
+    
+        {{ matchup_stats_container() }}
+
+
+  </div>
+
+
+</div>
+
+{% endblock %}

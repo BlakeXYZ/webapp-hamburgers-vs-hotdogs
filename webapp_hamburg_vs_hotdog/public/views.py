@@ -100,5 +100,10 @@ def test_vote():
         matchup.percent_b = (votes_b / total * 100) if total > 0 else 50
     return render_template("public/test_vote.html", contestants=contestants, matchups=matchups)
 
+@blueprint.route("/test_cards/")
+def test_cards():
+    """Test cards page."""
+    return render_template("public/test_cards.html")
+
 
 
