@@ -35,7 +35,7 @@
   width: 90vw; /* Responsive width for mobile */
   max-width: 300px; /* Limit on desktop */
   background: #fff;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   border-color: rgba(255, 255, 255, 0);
   margin: 2vw;
   border-radius: 18px;
