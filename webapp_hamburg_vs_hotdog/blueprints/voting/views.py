@@ -41,7 +41,7 @@ def on_click_vote():
     db.session.commit()
 
     matchup_id = Matchup.query.get(matchup_id)
-    return jsonify(get_matchup_stats(matchup_id=matchup_id, message=message))
+    return jsonify(get_matchup_stats(matchup_id=matchup_id, message=message, session_id=session_id))
 
 
 @blueprint.route("/api/matchup_stats/", methods=["GET"])
