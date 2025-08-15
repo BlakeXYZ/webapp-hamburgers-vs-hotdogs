@@ -1,8 +1,9 @@
-from email import message
 from flask import Blueprint, jsonify, request
 
 from webapp_hamburg_vs_hotdog.database import db
+
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote
+from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_matchup_stats import get_matchup_stats
 
 blueprint = Blueprint("voting", __name__)
 
@@ -39,17 +40,14 @@ def on_click_vote():
 
     db.session.commit()
 
-    matchup = Matchup.query.get(matchup_id)
-    votes_a = sum(1 for v in matchup.votes if v.contestant_id == matchup.contestant_a_id)
-    votes_b = sum(1 for v in matchup.votes if v.contestant_id == matchup.contestant_b_id)
-    return jsonify(
-        matchup_id=matchup_id,
-        total_votes=len(matchup.votes),
-        votes_a=votes_a,
-        votes_b=votes_b,
-        percent_a=(votes_a / len(matchup.votes) * 100) if len(matchup.votes) > 0 else 50,
-        percent_b=(votes_b / len(matchup.votes) * 100) if len(matchup.votes) > 0 else 50,
-        contestant_a_name=matchup.contestant_a.contestant_name,
-        contestant_b_name=matchup.contestant_b.contestant_name,
-        message=message,    
-    )
+    matchup_id = Matchup.query.get(matchup_id)
+    return jsonify(get_matchup_stats(matchup_id=matchup_id, message=message))
+
+
+@blueprint.route("/api/matchup_stats/", methods=["GET"])
+def api_matchup_stats():
+    """Return stats for all matchups as JSON, with optional session_id."""
+    session_id = request.args.get('session_id')
+    matchups = Matchup.query.all()
+    stats = {m.id: get_matchup_stats(m, session_id=session_id) for m in matchups}
+    return jsonify(stats)

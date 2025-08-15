@@ -4,7 +4,7 @@
   max-width: 900px;
   margin: 0 auto;
   height: 100%;
-  padding: 25px 10px;
+  padding: 35px 10px;
 }
 
 .swiper {
@@ -37,7 +37,7 @@
   background: #fff;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
   border-color: rgba(255, 255, 255, 0);
-  margin: 1vw;
+  margin: 2vw;
   border-radius: 18px;
   display: flex;
   flex-direction: column;
@@ -48,14 +48,16 @@
     box-shadow 0.2s,
     border 0.2s,
     background 0.2s,
-    scale 0.2s; 
+    scale 0.2s,
+    translate 0.2s;
 }
 
 .matchup-contestant.btn[aria-pressed="true"] {
   box-shadow: 0 1px 16px rgba(0, 0, 0, 0.3);
   border-color: rgba(255, 255, 255, 0);
   scale: 1.05;
-
+  translate: 0 -15px;
+ 
 }
 
 .matchup-contestant:active,

@@ -58,7 +58,7 @@
       {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
 
       <div class="swiper-slide" 
-      data-stats="Stats for {{ matchup.__repr__() }}">
+      data-slide-matchup-id="{{ matchup.id }}">
 
 
         <div class="matchup-container" id="matchup-{{ matchup.id }}">
@@ -97,7 +97,12 @@
       {% endfor %}
     </div>
     
-        {{ matchup_stats_container() }}
+
+    {{ matchup_stats_container() }}
+
+    <script>
+      window.matchupStats = {{ matchup_stats|tojson }};
+    </script>
 
 
   </div>

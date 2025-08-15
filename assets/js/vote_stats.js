@@ -9,17 +9,34 @@ function getSessionId() {
   return sessionId;
 }
 
-function setupSlideVoteButtons() {
+function updateStatsContent() {
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
+    const statsContainer = document.getElementById('matchup-stats-collapse-content');
+    if (activeSlideMatchupId && window.matchupStats && window.matchupStats[activeSlideMatchupId]) {
+        const stats = window.matchupStats[activeSlideMatchupId];
+        statsContainer.innerHTML = `
+            <div id="total-votes-${stats.matchup_id}"><strong>Total Votes:</strong> ${stats.total_votes}</div>
+            <div id="votes-a-${stats.matchup_id}"><strong>Votes for ${stats.contestant_a_name}:</strong> ${stats.votes_a} (${stats.percent_a.toFixed(1)}%)</div>
+            <div id="votes-b-${stats.matchup_id}"><strong>Votes for ${stats.contestant_b_name}:</strong> ${stats.votes_b} (${stats.percent_b.toFixed(1)}%)</div>
+        `;
+    } else {
+        statsContainer.textContent = '';
+    }
+    console.log('active slide matchup id:', activeSlideMatchupId);
+}
+
+
+function onClickSlideVoteButtons() {
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
     const voteButtons = activeSlide ? activeSlide.querySelectorAll('.vote-btn') : [];
 
+
     voteButtons.forEach(button => {
         button.addEventListener('click', async function() {
-
             const sessionId = getSessionId();
-            // const geoInfo = await getGeoIpInfo(); 
-            
             fetch('/on_click_vote/', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -27,43 +44,61 @@ function setupSlideVoteButtons() {
                     matchup_id: this.dataset.matchupId,
                     contestant_id: this.dataset.contestantId,
                     session_id: sessionId,
-                    // region_code: geoInfo.region_code,
-                    // country_code: geoInfo.country_code,
                 })
             })
             .then(response => response.json())
             .then(data => {
                 console.log('Vote response:', data);
+                window.matchupStats[data.matchup_id] = data;
 
+                // Remove aria-pressed and 'active' class from button in the active slide that was not clicked
+                // This ensures that only the clicked button is marked as active
+                voteButtons.forEach(btn => {
+                    if (btn !== this) {
+                        btn.setAttribute('aria-pressed', 'false');
+                        btn.classList.remove('active');
+                    }
+                });
+  
 
-
-
-                //TODO: Handle View Stats Window update on vote click + slide change
-                
-                //TODO: Handle Toggle vote when switching contestants
-
-                // // Update the vote counts in the DOM
-                // document.getElementById('total-votes-' + data.matchup_id).textContent =
-                //     'Total Votes: ' + data.total_votes;
-                //  document.getElementById('votes-a-' + data.matchup_id).textContent =
-                //      'Votes for ' + data.contestant_a_name + ': ' + data.votes_a;
-                //  document.getElementById('votes-b-' + data.matchup_id).textContent =
-                //      'Votes for ' + data.contestant_b_name + ': ' + data.votes_b;
-
-
-
+                updateStatsContent();
             });
         });
     });
 }
 
-function updateStatsContent() {
+function initializeSlideVoteButtons() {
+
+    // for each btn in active slide, fetch data-matchup-id
+    // fetch window.matchupstats[session_id_matchup_vote_is]
+    // if these match, please set button as active
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
-    const stats = activeSlide ? activeSlide.getAttribute('data-stats') : '';
-    document.getElementById('matchup-stats-collapse-content').textContent = stats;
-    console.log('active slide stats:', stats);
+    const voteButtons = activeSlide ? activeSlide.querySelectorAll('.vote-btn') : [];
+
+    voteButtons.forEach(button => {
+        const matchupId = button.dataset.matchupId;
+        const contestantId = button.dataset.contestantId;
+        const sessionId = getSessionId();
+        console.log('Checking button for matchup:', matchupId, 'contestant id:', contestantId, 'session:', sessionId);
+
+        const stats = window.matchupStats[matchupId];
+
+        console.log('Stats for matchup:', stats);
+
+        const sessionIdMatchupVoteIs = stats ? stats.session_id_matchup_vote_is : null;
+        console.log('Session ID Matchup Vote Is:', sessionIdMatchupVoteIs);
+        if (sessionIdMatchupVoteIs && sessionIdMatchupVoteIs == contestantId) {
+            button.setAttribute('aria-pressed', 'true');
+            button.classList.add('active');
+        } else {
+            button.setAttribute('aria-pressed', 'false');
+            button.classList.remove('active');
+        }
+    });
 }
+
+
 
 function collapseViewStats() {
     const collapseContent = document.getElementById('matchup-stats-collapse');
@@ -74,12 +109,21 @@ function collapseViewStats() {
 swiper.on('slideChange', function () {
     updateStatsContent();
     collapseViewStats();
-    setupSlideVoteButtons();
+    onClickSlideVoteButtons();
+    initializeSlideVoteButtons();
 });
 
 // Initialize stats content on page load
 document.addEventListener('DOMContentLoaded', function() {
-    updateStatsContent();
-    setupSlideVoteButtons();
-    console.log('Slide changed to index:', swiper.activeIndex);
+    const sessionId = getSessionId();
+    fetch(`/api/matchup_stats/?session_id=${encodeURIComponent(sessionId)}`)
+        .then(response => response.json())
+        .then(data => {
+            window.matchupStats = data;
+            updateStatsContent();
+            onClickSlideVoteButtons();
+            initializeSlideVoteButtons();
+            console.log('Slide changed to index:', swiper.activeIndex);
+            console.log('============== Matchup stats loaded:', window.matchupStats);
+        });
 });
