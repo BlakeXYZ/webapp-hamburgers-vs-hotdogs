@@ -5,7 +5,6 @@ from factory.alchemy import SQLAlchemyModelFactory
 
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.user.models import User
-from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup   
 
 
@@ -31,17 +30,6 @@ class UserFactory(BaseFactory):
         """Factory configuration."""
 
         model = User
-
-
-class ClickTestFactory(BaseFactory):
-    """ClickTest factory."""
-
-    click_count = 0
-
-    class Meta:
-        """Factory configuration."""
-
-        model = ClickTest
 
     
 class ContestantFactory(BaseFactory):

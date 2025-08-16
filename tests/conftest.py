@@ -9,7 +9,7 @@ from webtest import TestApp
 from webapp_hamburg_vs_hotdog.app import create_app
 from webapp_hamburg_vs_hotdog.database import db as _db
 
-from .factories import UserFactory, ClickTestFactory
+from .factories import UserFactory
 
 
 @pytest.fixture
@@ -52,9 +52,3 @@ def user(db):
     db.session.commit()
     return user
 
-@pytest.fixture
-def click_test(db):
-    """Create ClickTest instance for the tests."""
-    click_test_instance = ClickTestFactory()
-    db.session.commit()
-    return click_test_instance
