@@ -35,19 +35,12 @@ def load_user(user_id):
 @blueprint.route("/", methods=["GET", "POST"])
 def home():
     """Home page."""
-    form = LoginForm(request.form)
-    current_app.logger.info("Hello from the home page!")
-    # Handle logging in
-    if request.method == "POST":
-        if form.validate_on_submit():
-            login_user(form.user)
-            flash("You are logged in.", "success")
-            redirect_url = request.args.get("next") or url_for("user.members")
-            return redirect(redirect_url)
-        else:
-            flash_errors(form)
-    return render_template("public/home.html", form=form)
-
+    contestants = db.session.query(Contestant).all()
+    matchups = db.session.query(Matchup).all()
+    
+    # Build a dict of matchup stats for all matchups
+    matchup_stats = {m.id: get_matchup_stats(m) for m in matchups}
+    return render_template("public/home.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats)
 
 @blueprint.route("/logout/")
 @login_required
@@ -95,17 +88,6 @@ def test_vote():
         matchup.percent_a = (votes_a / total * 100) if total > 0 else 50
         matchup.percent_b = (votes_b / total * 100) if total > 0 else 50
     return render_template("public/test_vote.html", contestants=contestants, matchups=matchups)
-
-@blueprint.route("/test_cards/")
-def test_cards():
-    """Test cards page."""
-    contestants = db.session.query(Contestant).all()
-    matchups = db.session.query(Matchup).all()
-    
-    # Build a dict of matchup stats for all matchups
-
-    matchup_stats = {m.id: get_matchup_stats(m) for m in matchups}
-    return render_template("public/test_cards.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats)
 
 
 

@@ -1,14 +1,95 @@
+{% extends "layout.html" %} {% block content %}
 
-{% extends "layout.html" %}
-{% block content %}
-<!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="container">
-      <br style="margin-bottom: 1rem; height: 1rem;">
-      <h4>Welcome to webapp-hamburg-vs-hotdog</h4>
-      <br style="margin-bottom: 1rem; height: 1rem;">
-      <p>Howdy World! 😎 Let's do this!</p>
+
+
+{% macro matchup_stats_container() %}
+<div class="container matchup-stats-container">
+
+  <div class="container d-flex justify-content-center align-items-center mt-3">
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+
+    <button
+      class="btn btn-primary btn-sm btn-matchup-stats collapsed"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#matchup-stats-collapse"
+      aria-expanded="false"
+      aria-controls="matchup-stats-collapse"
+    >
+      View Stats
+    </button>
+  </div> 
+
+  <div class="collapse mt-3" id="matchup-stats-collapse">
+    <div class="card card-body fw-light" id="matchup-stats-collapse-content">
+      Placeholder Text
     </div>
- 
-    
-{% endblock %}
+  </div>
 
+</div>
+{% endmacro %}
+
+<div class="swiper-container">
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
+      {% for matchup in matchups %} 
+      
+      {% set color_a = colors | random %} 
+      {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
+
+      <div class="swiper-slide" 
+      data-slide-matchup-id="{{ matchup.id }}">
+
+
+        <div class="matchup-container" id="matchup-{{ matchup.id }}">
+
+          <div class="matchup-vs-text-overlay">
+            <span>VS.</span>
+          </div>
+
+          <button 
+          type="button" 
+          class="btn vote-btn matchup-contestant" 
+          data-matchup-id="{{ matchup.id }}"
+          data-contestant-id="{{ matchup.contestant_a_id }}"          
+          data-bs-toggle="button">
+
+            <div class="matchup-contestant-img-container {{ color_a }}">☒</div>
+            <h6 class="text-center">{{ matchup.contestant_a.contestant_name }}</h6>
+            <p class="fw-light text-start">{{ matchup.contestant_a.contestant_description }}</p>
+          </button>
+
+          <button 
+          type="button" 
+          class="btn vote-btn matchup-contestant" 
+          data-matchup-id="{{ matchup.id }}"
+          data-contestant-id="{{ matchup.contestant_b_id }}"
+          data-bs-toggle="button">
+
+            <div class="matchup-contestant-img-container {{ color_b }}">☒</div>
+            <h6 class="text-center">{{ matchup.contestant_b.contestant_name }}</h6>
+            <p class="fw-light text-start">{{ matchup.contestant_b.contestant_description }}</p>
+          </button>
+        </div>
+      </div>
+
+
+      {% endfor %}
+    </div>
+    
+
+    {{ matchup_stats_container() }}
+
+    <script>
+      window.matchupStats = {{ matchup_stats|tojson }};
+    </script>
+
+
+  </div>
+
+
+</div>
+
+{% endblock %}
