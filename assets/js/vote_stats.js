@@ -1,4 +1,5 @@
 import { swiper } from './vote_swiper.js';
+import { Collapse } from 'bootstrap';
 
 function getSessionId() {
   let sessionId = localStorage.getItem('session_id');
@@ -28,42 +29,40 @@ function updateStatsContent() {
 }
 
 
-function onClickSlideVoteButtons() {
-    const slides = document.querySelectorAll('.swiper-slide');
-    const activeSlide = slides[swiper.activeIndex];
-    const voteButtons = activeSlide ? activeSlide.querySelectorAll('.vote-btn') : [];
 
 
-    voteButtons.forEach(button => {
-        button.addEventListener('click', async function() {
-            const sessionId = getSessionId();
-            fetch('/on_click_vote/', {
+function setupVoteDelegation() {
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    swiperWrapper.addEventListener('click', async function(event) {
+        const button = event.target.closest('.vote-btn');
+        if (!button) return;
+
+        // Prevent double submit
+        if (button.disabled) return;
+        button.disabled = true;
+
+        const sessionId = getSessionId();
+        const matchupId = button.dataset.matchupId;
+        const contestantId = button.dataset.contestantId;
+
+        try {
+            const response = await fetch('/on_click_vote/', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    matchup_id: this.dataset.matchupId,
-                    contestant_id: this.dataset.contestantId,
+                    matchup_id: matchupId,
+                    contestant_id: contestantId,
                     session_id: sessionId,
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Vote response:', data);
-                window.matchupStats[data.matchup_id] = data;
-
-                // Remove aria-pressed and 'active' class from button in the active slide that was not clicked
-                // This ensures that only the clicked button is marked as active
-                voteButtons.forEach(btn => {
-                    if (btn !== this) {
-                        btn.setAttribute('aria-pressed', 'false');
-                        btn.classList.remove('active');
-                    }
-                });
-  
-
-                updateStatsContent();
             });
-        });
+            const data = await response.json();
+            window.matchupStats[data.matchup_id] = data;
+            updateStatsContent();
+            initializeSlideVoteButtons();
+            expandViewStats();
+        } finally {
+            button.disabled = false;
+        }
     });
 }
 
@@ -91,6 +90,7 @@ function initializeSlideVoteButtons() {
         if (sessionIdMatchupVoteIs && sessionIdMatchupVoteIs == contestantId) {
             button.setAttribute('aria-pressed', 'true');
             button.classList.add('active');
+            expandViewStats();
         } else {
             button.setAttribute('aria-pressed', 'false');
             button.classList.remove('active');
@@ -99,6 +99,13 @@ function initializeSlideVoteButtons() {
 }
 
 
+
+function expandViewStats() {
+    const collapseContent = document.getElementById('matchup-stats-collapse');
+    if (!collapseContent) return;
+    const bsCollapse = Collapse.getOrCreateInstance(collapseContent);
+    bsCollapse.show();
+}
 
 function collapseViewStats() {
     const collapseContent = document.getElementById('matchup-stats-collapse');
@@ -109,7 +116,6 @@ function collapseViewStats() {
 swiper.on('slideChange', function () {
     updateStatsContent();
     collapseViewStats();
-    onClickSlideVoteButtons();
     initializeSlideVoteButtons();
 });
 
@@ -121,8 +127,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             window.matchupStats = data;
             updateStatsContent();
-            onClickSlideVoteButtons();
             initializeSlideVoteButtons();
+            setupVoteDelegation();
             console.log('Slide changed to index:', swiper.activeIndex);
             console.log('============== Matchup stats loaded:', window.matchupStats);
         });
