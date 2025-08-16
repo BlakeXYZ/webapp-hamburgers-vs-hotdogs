@@ -10,11 +10,17 @@ function getSessionId() {
   return sessionId;
 }
 
-function updateStatsContent() {
+function updateStatsContent(retryCount = 0) {
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
     const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
     const statsContainer = document.getElementById('matchup-stats-collapse-content');
+    if (!statsContainer) {
+        if (retryCount < 10) {
+            setTimeout(() => updateStatsContent(retryCount + 1), 100);
+        }
+        return;
+    }
     if (activeSlideMatchupId && window.matchupStats && window.matchupStats[activeSlideMatchupId]) {
         const stats = window.matchupStats[activeSlideMatchupId];
         statsContainer.innerHTML = `
@@ -126,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             window.matchupStats = data;
-            updateStatsContent();
+            updateStatsContent(10);
             initializeSlideVoteButtons();
             setupVoteDelegation();
             console.log('Slide changed to index:', swiper.activeIndex);

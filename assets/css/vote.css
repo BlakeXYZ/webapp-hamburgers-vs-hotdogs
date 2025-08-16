@@ -60,6 +60,11 @@
  
 }
 
+/* Fixes button flashing when disabled */
+.vote-btn:disabled {
+  opacity: 1;
+}
+
 .matchup-contestant:active,
 .matchup-contestant:focus,
 .swiper-slide-dragging .matchup-contestant {
