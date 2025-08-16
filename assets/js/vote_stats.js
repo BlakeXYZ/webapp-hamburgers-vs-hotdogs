@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             window.matchupStats = data;
-            updateStatsContent(retryCount = 10);
+            updateStatsContent(10);
             initializeSlideVoteButtons();
             setupVoteDelegation();
             console.log('Slide changed to index:', swiper.activeIndex);
