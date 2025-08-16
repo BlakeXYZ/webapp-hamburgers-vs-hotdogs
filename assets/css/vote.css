@@ -35,8 +35,8 @@
   width: 90vw; /* Responsive width for mobile */
   max-width: 300px; /* Limit on desktop */
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0);
+  box-shadow: 0 1px 4px var(--bs-border-color);
+  border-color: var(--bs-border-color);
   margin: 7px;
   border-radius: 18px;
   display: flex;
@@ -53,8 +53,8 @@
 }
 
 .matchup-contestant.btn[aria-pressed="true"] {
-  box-shadow: 0 1px 16px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0);
+  box-shadow: 0 1px 16px var(--bs-border-color);
+  border-color: var(--bs-border-color);
   scale: 1.05;
   translate: 0 -15px;
  
@@ -68,7 +68,13 @@
 .matchup-contestant:active,
 .matchup-contestant:focus,
 .swiper-slide-dragging .matchup-contestant {
-  border-color: rgba(255, 255, 255, 0) !important;
+  border-color: var(--bs-border-color) !important;
+}
+
+.matchup-contestant:hover {
+  box-shadow: 0 1px 4px var(--bs-border-color);
+  border-color: var(--bs-border-color);
+  translate: 0 -5px;
 }
 
 .matchup-contestant-img-container {
@@ -93,12 +99,12 @@
   background: #ffffff; /* solid color, e.g. Bootstrap warning */
   border-radius: 8px;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 1.25rem;
+  border: 1px solid var(--bs-border-color);
 }
 
 @media (min-width: 576px) {

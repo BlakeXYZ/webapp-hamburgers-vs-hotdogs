@@ -42,6 +42,14 @@ def home():
     matchup_stats = {m.id: get_matchup_stats(m) for m in matchups}
     return render_template("public/home.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats)
 
+
+@blueprint.route("/gallery/")
+def gallery():
+    """Gallery page."""
+    return render_template("public/gallery.html")
+
+
+
 @blueprint.route("/logout/")
 @login_required
 def logout():
