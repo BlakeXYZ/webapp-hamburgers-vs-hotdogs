@@ -10,7 +10,7 @@
   <div class="swiper-button-prev"></div>
 
     <button
-      class="btn btn-primary btn-sm"
+      class="btn btn-primary btn-sm btn-matchup-stats collapsed"
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#matchup-stats-collapse"
@@ -38,48 +38,71 @@
       <h1>Test Cards</h1>
     </div>
   </div>
+<h4>Contestant List</h4>
+<ul>
+    {% for contestant in contestants %}
+    <p>{{contestant.id}}. {{ contestant.contestant_name }} - {{ contestant.contestant_description}}</p>
+    {% endfor %}
+</ul>
 </div>
+
 
 
 <div class="swiper-container">
   <div class="swiper mySwiper">
     <div class="swiper-wrapper">
       {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
-      {% for i in range(5) %} 
+      {% for matchup in matchups %} 
+      
       {% set color_a = colors | random %} 
       {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
 
-      <div class="swiper-slide" data-stats="Stats for matchup {{ i }}">
+      <div class="swiper-slide" 
+      data-slide-matchup-id="{{ matchup.id }}">
 
 
-        <div class="matchup-container">
+        <div class="matchup-container" id="matchup-{{ matchup.id }}">
+
           <div class="matchup-vs-text-overlay">
             <span>VS.</span>
           </div>
 
-          <button type="button" class="matchup-contestant btn" data-bs-toggle="button">
+          <button 
+          type="button" 
+          class="btn vote-btn matchup-contestant" 
+          data-matchup-id="{{ matchup.id }}"
+          data-contestant-id="{{ matchup.contestant_a_id }}"          
+          data-bs-toggle="button">
+
             <div class="matchup-contestant-img-container {{ color_a }}">☒</div>
-            <h6 class="text-center">Contestant A</h6>
-            <p class="fw-light text-start">Matchup {{ i }} <br> Description text goes here <br> more text here</p>
+            <h6 class="text-center">{{ matchup.contestant_a.contestant_name }}</h6>
+            <p class="fw-light text-start">{{ matchup.contestant_a.contestant_description }}</p>
           </button>
 
-          <button type="button" class="matchup-contestant btn" data-bs-toggle="button">
+          <button 
+          type="button" 
+          class="btn vote-btn matchup-contestant" 
+          data-matchup-id="{{ matchup.id }}"
+          data-contestant-id="{{ matchup.contestant_b_id }}"
+          data-bs-toggle="button">
+
             <div class="matchup-contestant-img-container {{ color_b }}">☒</div>
-            <h6 class="text-center">Contestant B</h6>
-            <p class="fw-light text-start">Matchup {{ i }} <br> Description text goes here</p>
+            <h6 class="text-center">{{ matchup.contestant_b.contestant_name }}</h6>
+            <p class="fw-light text-start">{{ matchup.contestant_b.contestant_description }}</p>
           </button>
         </div>
-
-
-
-
       </div>
 
 
       {% endfor %}
     </div>
     
-        {{ matchup_stats_container() }}
+
+    {{ matchup_stats_container() }}
+
+    <script>
+      window.matchupStats = {{ matchup_stats|tojson }};
+    </script>
 
 
   </div>

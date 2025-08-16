@@ -20,7 +20,9 @@ from webapp_hamburg_vs_hotdog.utils import flash_errors
 
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.click_test.models import ClickTest
+
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote
+from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_matchup_stats import get_matchup_stats
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
@@ -103,7 +105,13 @@ def test_vote():
 @blueprint.route("/test_cards/")
 def test_cards():
     """Test cards page."""
-    return render_template("public/test_cards.html")
+    contestants = db.session.query(Contestant).all()
+    matchups = db.session.query(Matchup).all()
+    
+    # Build a dict of matchup stats for all matchups
+
+    matchup_stats = {m.id: get_matchup_stats(m) for m in matchups}
+    return render_template("public/test_cards.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats)
 
 
 
