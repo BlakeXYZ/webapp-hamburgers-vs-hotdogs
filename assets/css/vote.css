@@ -71,10 +71,12 @@
   border-color: var(--bs-border-color) !important;
 }
 
-.matchup-contestant:hover {
-  box-shadow: 0 1px 4px var(--bs-border-color);
-  border-color: var(--bs-border-color);
-  translate: 0 -5px;
+@media (hover: hover) and (pointer: fine) {
+  .matchup-contestant:hover {
+    box-shadow: 0 1px 4px var(--bs-border-color);
+    border-color: var(--bs-border-color);
+    translate: 0 -5px;
+  }
 }
 
 .matchup-contestant-img-container {
