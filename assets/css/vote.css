@@ -122,11 +122,6 @@
   }
 }
 
-/* Responsive styles for mobile */
-.matchup-contestant h6 {
-  text-align: center;
-}
-
 .swiper-button-next,
 .swiper-button-prev {
   color: #00000043;
