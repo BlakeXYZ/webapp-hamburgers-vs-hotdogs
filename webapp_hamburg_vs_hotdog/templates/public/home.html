@@ -40,8 +40,9 @@
       {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
 
       <div class="swiper-slide" 
-      data-slide-matchup-id="{{ matchup.id }}">
-
+      data-slide-matchup-id="{{ matchup.id }}"
+      data-slide-matchup-contestant-a-color="{{ color_a }}"
+      data-slide-matchup-contestant-b-color="{{ color_b }}">
 
         <div class="matchup-container" id="matchup-{{ matchup.id }}">
 
