@@ -52,6 +52,12 @@
     translate 0.2s;
 }
 
+.matchup-contestant.btn:hover{
+  background: #fff;
+  box-shadow: 0 1px 4px var(--bs-border-color);
+  border-color: var(--bs-border-color);
+}
+
 .matchup-contestant.btn[aria-pressed="true"] {
   box-shadow: 0 1px 16px var(--bs-border-color);
   border-color: var(--bs-border-color);

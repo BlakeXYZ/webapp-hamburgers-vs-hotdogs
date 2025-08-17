@@ -34,9 +34,6 @@ function updateStatsContent(retryCount = 0) {
     console.log('active slide matchup id:', activeSlideMatchupId);
 }
 
-
-
-
 function setupVoteDelegation() {
     const swiperWrapper = document.querySelector('.swiper-wrapper');
     swiperWrapper.addEventListener('click', async function(event) {
@@ -73,7 +70,6 @@ function setupVoteDelegation() {
 }
 
 function initializeSlideVoteButtons() {
-
     // for each btn in active slide, fetch data-matchup-id
     // fetch window.matchupstats[session_id_matchup_vote_is]
     // if these match, please set button as active
@@ -103,8 +99,6 @@ function initializeSlideVoteButtons() {
         }
     });
 }
-
-
 
 function expandViewStats() {
     const collapseContent = document.getElementById('matchup-stats-collapse');
