@@ -20,7 +20,8 @@
     <div class="row g-3 align-items-stretch">
     {% for contestant in contestants %}
         <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-            <div class="matchup-contestant p-2 text-center h-100" style="width: 100%;">
+            <div class="btn matchup-contestant p-2 text-center h-100" 
+            style="width: 100%;">
                 <div class="matchup-contestant-img-container bg-danger">☒</div>
                 <h6 class="text-center">{{ contestant.contestant_name }}</h6>
                 <p class="fw-light text-start">{{ contestant.contestant_description }}</p>
