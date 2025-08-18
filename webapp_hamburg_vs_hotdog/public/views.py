@@ -46,7 +46,8 @@ def home():
 @blueprint.route("/gallery/")
 def gallery():
     """Gallery page."""
-    return render_template("public/gallery.html")
+    contestants = db.session.query(Contestant).all()
+    return render_template("public/gallery.html", contestants=contestants)
 
 
 

@@ -106,6 +106,7 @@ function initializeStatsContent( retryCount = 0 ) {
 
 function setupVoteDelegation() {
     const swiperWrapper = document.querySelector('.swiper-wrapper');
+    if (!swiperWrapper) return;
     swiperWrapper.addEventListener('click', async function(event) {
         const button = event.target.closest('.vote-btn');
         if (!button) return;
