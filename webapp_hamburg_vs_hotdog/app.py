@@ -64,10 +64,9 @@ def register_admin_views(app):
     from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote, AdminMatchupView
     from flask_admin.contrib.sqla import ModelView
 
-    admin.add_view(ModelView(Contestant, db.session))
-    admin.add_view(AdminMatchupView(Matchup, db.session))
-    admin.add_view(ModelView(Vote, db.session))
-    
+    admin.add_view(ModelView(Contestant, db.session, endpoint='admin_contestant'))
+    admin.add_view(AdminMatchupView(Matchup, db.session, endpoint='admin_matchup'))
+    admin.add_view(ModelView(Vote, db.session, endpoint='admin_vote'))
 
     return None
 
