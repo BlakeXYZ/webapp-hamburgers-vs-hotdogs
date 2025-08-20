@@ -10,10 +10,23 @@ function getSessionId() {
   return sessionId;
 }
 
-function statsContentVoteText(stats) {
+function statsContentTotalVotesText(stats) {
     // Update the vote text with the percentage values
     return `
-        <div id="total-votes-${stats.matchup_id}" class="text-center"><strong>Total Votes:</strong> ${stats.total_votes}</div>
+        <div id="total-votes-${stats.matchup_id}" class="text-center mb-2"><strong>Total Votes:</strong> ${stats.total_votes}</div>
+    `;
+}
+
+function statsContentVotesForText(stats) {
+    return `
+        <div class="d-flex justify-content-between mb-2 gap-2">
+            <div id="votes-a-${stats.matchup_id}" class="text-center flex-fill">
+                <strong>Votes for ${stats.contestant_a_name}:</strong> ${stats.votes_a}
+            </div>
+            <div id="votes-b-${stats.matchup_id}" class="text-center flex-fill">
+                <strong>Votes for ${stats.contestant_b_name}:</strong> ${stats.votes_b}
+            </div>
+        </div>
     `;
 }
 
@@ -27,7 +40,7 @@ function statsContentProgressBar(activeSlide, stats){
 
     // Update the progress bar with the percentage values
     return `
-    <div class="progress" style="height: 2rem;">
+    <div class="progress mb-2" style="height: 2rem;">
         <div class="progress-bar progress-bar-striped progress-bar-animated ${activeSlideMatchupContestantAColor}" role="progressbar"
             style="width: ${stats.percent_a.toFixed(1)}%"
             aria-valuenow="${stats.percent_a}" aria-valuemin="0" aria-valuemax="100">
@@ -62,10 +75,14 @@ function updateStatsContent(retryCount = 0) {
         const stats = window.matchupStats[activeSlideMatchupId];
         // Only update progress bar values if they exist
         const totalVotes = statsContainer.querySelector(`#total-votes-${stats.matchup_id}`);
+        const votesA = statsContainer.querySelector(`#votes-a-${stats.matchup_id}`);
+        const votesB = statsContainer.querySelector(`#votes-b-${stats.matchup_id}`);
         const barA = statsContainer.querySelector(`.progress-bar.${activeSlideMatchupContestantAColor}`);
         const barB = statsContainer.querySelector(`.progress-bar.${activeSlideMatchupContestantBColor}`);
 
         if (totalVotes) totalVotes.innerHTML = `<strong>Total Votes:</strong> ${stats.total_votes}`;
+        if (votesA) votesA.innerHTML = `<strong>Votes for ${stats.contestant_a_name}:</strong> ${stats.votes_a}`;
+        if (votesB) votesB.innerHTML = `<strong>Votes for ${stats.contestant_b_name}:</strong> ${stats.votes_b}`;
 
         if (barA && barB) {
             barA.style.width = stats.percent_a.toFixed(1) + '%';
@@ -93,8 +110,9 @@ function initializeStatsContent( retryCount = 0 ) {
     if (activeSlideMatchupId && window.matchupStats && window.matchupStats[activeSlideMatchupId]) {
         const stats = window.matchupStats[activeSlideMatchupId];
         statsContainer.innerHTML = `
-            ${statsContentVoteText(stats)}
+            ${statsContentTotalVotesText(stats)}
             ${statsContentProgressBar(activeSlide, stats)}
+            ${statsContentVotesForText(stats)}
         `;
 
     } else {
