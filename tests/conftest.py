@@ -9,8 +9,6 @@ from webtest import TestApp
 from webapp_hamburg_vs_hotdog.app import create_app
 from webapp_hamburg_vs_hotdog.database import db as _db
 
-from .factories import UserFactory, ClickTestFactory
-
 
 @pytest.fixture
 def app():
@@ -45,16 +43,5 @@ def db(app):
     _db.drop_all()
 
 
-@pytest.fixture
-def user(db):
-    """Create user for the tests."""
-    user = UserFactory(password="myprecious")
-    db.session.commit()
-    return user
 
-@pytest.fixture
-def click_test(db):
-    """Create ClickTest instance for the tests."""
-    click_test_instance = ClickTestFactory()
-    db.session.commit()
-    return click_test_instance
+
