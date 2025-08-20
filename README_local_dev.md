@@ -45,6 +45,6 @@ Remove-Item dev.db
 # (Optional) Delete all migration scripts except __init__.py
 Remove-Item -Recurse -Force .\migrations\versions\*
 
-# Recreate the database and run migrations
+# Recreate the database and run migrations 
 # (Assuming you use Flask-Migrate/Alembic and have a manage script or use flask CLI)
 flask db upgrade
