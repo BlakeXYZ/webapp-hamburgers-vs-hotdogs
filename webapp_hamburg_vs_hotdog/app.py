@@ -6,7 +6,7 @@ import sys
 from flask import Flask, render_template
 
 from webapp_hamburg_vs_hotdog import commands, public
-from webapp_hamburg_vs_hotdog.blueprints import voting
+from webapp_hamburg_vs_hotdog.blueprints import user, voting
 from webapp_hamburg_vs_hotdog.extensions import (
     bcrypt,
     cache,
@@ -16,7 +16,6 @@ from webapp_hamburg_vs_hotdog.extensions import (
     flask_static_digest,
     login_manager,
     migrate,
-    admin,
 )
 
 def create_app(config_object="webapp_hamburg_vs_hotdog.settings"):
@@ -31,7 +30,6 @@ def create_app(config_object="webapp_hamburg_vs_hotdog.settings"):
     register_errorhandlers(app)
     register_shellcontext(app)
     register_commands(app)
-    register_admin_views(app)
     configure_logger(app)
     return app
 
@@ -46,28 +44,16 @@ def register_extensions(app):
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
     flask_static_digest.init_app(app)
-    admin.init_app(app)
     return None
 
 
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(public.views.blueprint)
+    app.register_blueprint(user.views.blueprint)
     app.register_blueprint(voting.views.blueprint)
     # Exempt blueprints from CSRF protection
     csrf_protect.exempt(voting.views.blueprint)
-
-    return None
-
-def register_admin_views(app):
-    """Register Flask-Admin views."""
-    from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote, AdminMatchupView
-    from flask_admin.contrib.sqla import ModelView
-
-    admin.add_view(ModelView(Contestant, db.session))
-    admin.add_view(AdminMatchupView(Matchup, db.session))
-    admin.add_view(ModelView(Vote, db.session))
-    
 
     return None
 
@@ -91,7 +77,7 @@ def register_shellcontext(app):
 
     def shell_context():
         """Shell context objects."""
-        return {"db": db}
+        return {"db": db, "User": user.models.User}
 
     app.shell_context_processor(shell_context)
 

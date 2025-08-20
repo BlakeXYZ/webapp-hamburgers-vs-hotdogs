@@ -2,11 +2,9 @@
 """Click Test models."""
 from calendar import c
 from datetime import datetime, timezone
-from re import M
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from webapp_hamburg_vs_hotdog.database import Model, db, relationship
-from flask_admin.contrib.sqla import ModelView
 
 
 #TODO: Upgrade DB with voting models and setup unit tests for them.
@@ -39,8 +37,8 @@ class Contestant(Model):
         return self.matchups_as_a + self.matchups_as_b
 
     def __repr__(self):
-        return f'<{self.contestant_name} - {self.contestant_description}> '
-
+        return f'<Contestant: {self.contestant_name} {self.contestant_description} <All Matchups: {self.all_matchups}>> '
+    
 
 class Matchup(Model):
     """Model for a matchup between two contestants."""
@@ -117,21 +115,5 @@ class Vote(Model):
         return f'<A Vote for {self.contestant.contestant_name} in {self.matchup}>'
 
 
-class AdminMatchupView(ModelView):
-    column_list = ('id', 'contestant_a', 'contestant_b')
-    column_labels = {
-        'contestant_a': 'Contestant A Name',
-        'contestant_b': 'Contestant B Name'
-    }
-    column_display_pk = True  # Show the primary key
 
-    def _contestant_a_formatter(view, context, model, name):
-        return model.contestant_a.contestant_name if model.contestant_a else None
-
-    def _contestant_b_formatter(view, context, model, name):
-        return model.contestant_b.contestant_name if model.contestant_b else None
-
-    column_formatters = {
-        'contestant_a': _contestant_a_formatter,
-        'contestant_b': _contestant_b_formatter,
-    }
+    
