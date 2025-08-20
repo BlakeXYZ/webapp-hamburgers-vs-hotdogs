@@ -10,6 +10,54 @@ function getSessionId() {
   return sessionId;
 }
 
+// function getGeoIpInfo() {
+//     const cacheKey = 'geoip_info';
+//     const cacheTTL = 24 * 60 * 60 * 1000; // 24 hours in ms
+
+//     // Try to get cached value
+//     const cached = localStorage.getItem(cacheKey);
+//     if (cached) {
+//         const { data, timestamp } = JSON.parse(cached);
+//         if (Date.now() - timestamp < cacheTTL) {
+//             return Promise.resolve(data);
+//         }
+//     }
+
+//     // If not cached or expired, fetch and cache
+//     return fetch('https://ipapi.co/json/')
+//         .then(response => response.json())
+//         .then(data => {
+//             const geo = {
+//                 region_code: data.region_code,
+//                 country_code: data.country_code
+//             };
+//             localStorage.setItem(cacheKey, JSON.stringify({ data: geo, timestamp: Date.now() }));
+//             return geo;
+//         });
+// }
+
+// import { confetti_blue, confetti_red } from './vote_confetti.js';
+// function launchConfetti() {
+//     // Trigger confetti only if message does NOT contain "removed" and A is pressed
+//     if (
+//         typeof data.message === 'string' &&
+//         !data.message.toLowerCase().includes('removed') &&
+//         this.classList.contains('bg-primary')
+//     ) {
+//         console.log("Vote for A registered, firing confetti!");
+//         confetti_blue();
+//     }
+//     // Trigger confetti only if message does NOT contain "removed" and B is pressed
+//     if (
+//         typeof data.message === 'string' &&
+//         !data.message.toLowerCase().includes('removed') &&
+//         this.classList.contains('bg-danger')
+//     ) {
+//         console.log("Vote for B registered, firing confetti!");
+//         confetti_red();
+//     }
+// }
+
 function statsContentTotalVotesText(stats) {
     // Update the vote text with the percentage values
     return `
@@ -136,6 +184,7 @@ function setupVoteDelegation() {
         const sessionId = getSessionId();
         const matchupId = button.dataset.matchupId;
         const contestantId = button.dataset.contestantId;
+        // const geoInfo = await getGeoIpInfo();
 
         try {
             const response = await fetch('/on_click_vote/', {
@@ -145,6 +194,8 @@ function setupVoteDelegation() {
                     matchup_id: matchupId,
                     contestant_id: contestantId,
                     session_id: sessionId,
+                    // region_code: geoInfo.region_code,
+                    // country_code: geoInfo.country_code,
                 })
             });
             const data = await response.json();
