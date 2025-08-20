@@ -33,18 +33,3 @@ Download Microsoft's extension: Container Tools
 ### How to push webpack js changes in local dev env
 ### in powershell run:
 npm run build:win3 
-
-
----
-### Local Dev DB Reset
-# Stop your dev server first!
-
-# Delete the dev database
-Remove-Item dev.db
-
-# (Optional) Delete all migration scripts except __init__.py
-Remove-Item -Recurse -Force .\migrations\versions\*
-
-# Recreate the database and run migrations
-# (Assuming you use Flask-Migrate/Alembic and have a manage script or use flask CLI)
-flask db upgrade
