@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Click Test models."""
+from calendar import c
 from datetime import datetime, timezone
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -16,8 +17,18 @@ class Contestant(Model):
     contestant_name:           so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     contestant_description:    so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
 
-    matchups_as_a:      so.Mapped[list['Matchup']] = so.relationship('Matchup', back_populates='contestant_a', foreign_keys='Matchup.contestant_a_id')
-    matchups_as_b:      so.Mapped[list['Matchup']] = so.relationship('Matchup', back_populates='contestant_b', foreign_keys='Matchup.contestant_b_id')
+    matchups_as_a:      so.Mapped[list['Matchup']] = so.relationship(
+        'Matchup', 
+        back_populates='contestant_a',
+        foreign_keys='Matchup.contestant_a_id',
+        cascade='all, delete-orphan'
+    )
+    matchups_as_b:      so.Mapped[list['Matchup']] = so.relationship(
+        'Matchup',
+        back_populates='contestant_b',
+        foreign_keys='Matchup.contestant_b_id',
+        cascade='all, delete-orphan'
+    )
     votes:              so.Mapped[list['Vote']] = so.relationship('Vote', back_populates='contestant', cascade='all, delete-orphan')
 
     @property
@@ -52,8 +63,8 @@ class Matchup(Model):
         super().__init__(**kwargs)
 
     id:                   so.Mapped[int] = so.mapped_column(primary_key=True)
-    contestant_a_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id'), index=True) 
-    contestant_b_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id'), index=True)
+    contestant_a_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id', ondelete='CASCADE'), index=True) 
+    contestant_b_id:      so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id', ondelete='CASCADE'), index=True)
 
     contestant_a:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_a', foreign_keys=[contestant_a_id])
     contestant_b:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_b', foreign_keys=[contestant_b_id])
@@ -90,8 +101,8 @@ class Vote(Model):
         super().__init__(**kwargs)
 
     id:                        so.Mapped[int] = so.mapped_column(primary_key=True)
-    matchup_id:                so.Mapped[int] = so.mapped_column(sa.ForeignKey('matchup.id'), index=True)
-    contestant_id:             so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id'), index=True)
+    matchup_id:                so.Mapped[int] = so.mapped_column(sa.ForeignKey('matchup.id', ondelete='CASCADE'), index=True)
+    contestant_id:             so.Mapped[int] = so.mapped_column(sa.ForeignKey('contestant.id', ondelete='CASCADE'), index=True)
     session_id:                so.Mapped[str] = so.mapped_column(sa.String(64), index=True, nullable=False)
     country_code:              so.Mapped[str] = so.mapped_column(sa.String(2), index=True, nullable=False) # ISO 3166-1 alpha-2 country code
     timestamp:                 so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
