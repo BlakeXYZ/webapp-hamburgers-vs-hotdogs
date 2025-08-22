@@ -15,6 +15,15 @@ body {
   padding-top: 60px;
 }
 
+@media (max-width: 576px) {
+  /* Bootstrap sm breakpoint */
+  body {
+    padding-top: 30px;
+  }
+}
+
+
+
 section {
   overflow: auto;
 }
