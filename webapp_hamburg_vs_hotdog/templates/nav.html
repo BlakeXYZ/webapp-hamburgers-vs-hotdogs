@@ -1,11 +1,12 @@
 
 <!-- Desktop/Tablet Top Navbar (hidden on mobile) -->
 <nav class="navbar navbar-expand-md navbar-light bg-white fixed-top d-none d-md-flex">
-  <div class="container-fluid justify-content-center">
-    <a class="navbar-brand mx-auto" href="{{ url_for('public.home') }}">
+  <div class="container d-flex align-items-center">
+    <a class="navbar-brand ms-0" href="{{ url_for('public.home') }}">
       <img src="{{ static_url_for('static', filename='build/ham_vs_hot_title_logo.png') }}" alt="Hamburgers vs Hotdogs Logo" class="img-fluid" style="max-width: 150px; height: auto;" />
     </a>
-    <ul class="navbar-nav mx-auto">
+    <div class="flex-grow-1"></div>
+    <ul class="navbar-nav ms-auto">
       <li class="nav-item active">
         <a class="nav-link" href="{{ url_for('public.home') }}">
           <span class="d-flex justify-content-center align-items-center">
