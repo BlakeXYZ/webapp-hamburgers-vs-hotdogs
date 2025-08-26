@@ -30,9 +30,22 @@
 </div>
 {% endmacro %}
 
+{% macro first_visit_instructions() %}
+{# {% if not has_visited %} #}  {# TODO: Reimplement after testing #}
+{% if has_visited %}
+<div class="container text-center mt-3">
+  <p class="first-visit-message">Welcome to the site! This is your first visit.</p>
+</div>
+{% else %}
+<div class="container text-center mt-3">
+  <p class="return-visit-message">Welcome back!</p>
+</div>
+{% endif %}
+{% endmacro %}
 
 
 <div class="swiper-container mt-3">
+  {{ first_visit_instructions() }}
   <div class="swiper mySwiper">
     <div class="swiper-wrapper">
       {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 

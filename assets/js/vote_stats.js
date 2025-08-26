@@ -83,8 +83,8 @@ function statsContentProgressBar(activeSlide, stats){
     const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
     const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
 
-    console.log('activeSlideMatchupContestantAColor:', activeSlideMatchupContestantAColor);
-    console.log('activeSlideMatchupContestantBColor:', activeSlideMatchupContestantBColor);
+    // console.log('activeSlideMatchupContestantAColor:', activeSlideMatchupContestantAColor);
+    // console.log('activeSlideMatchupContestantBColor:', activeSlideMatchupContestantBColor);
 
     // Update the progress bar with the percentage values
     return `
@@ -141,7 +141,7 @@ function updateStatsContent(retryCount = 0) {
     } else {
         statsContainer.textContent = '';
     }
-    console.log('active slide matchup id:', activeSlideMatchupId);
+    // console.log('active slide matchup id:', activeSlideMatchupId);
 }
 
 function initializeStatsContent( retryCount = 0 ) {
@@ -166,7 +166,7 @@ function initializeStatsContent( retryCount = 0 ) {
     } else {
         statsContainer.textContent = '';
     }
-    console.log('active slide matchup id:', activeSlideMatchupId);
+    // console.log('active slide matchup id:', activeSlideMatchupId);
 }
 
 
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeStatsContent(10);
             initializeSlideVoteButtons();
             setupVoteDelegation();
-            console.log('Slide changed to index:', swiper.activeIndex);
-            console.log('============== Matchup stats loaded:', window.matchupStats);
+            // console.log('Slide changed to index:', swiper.activeIndex);
+            // console.log('============== Matchup stats loaded:', window.matchupStats);
         });
 });
