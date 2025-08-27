@@ -1,6 +1,6 @@
-function hideFirstVisitElements() {
-  const pointer = document.getElementById('first-visit-pointer');
-  const text = document.getElementById('first-visit-text');
+function hideFirstVoteElements() {
+  const pointer = document.getElementById('first-vote-pointer');
+  const text = document.getElementById('first-vote-text');
   if (pointer) {
     pointer.style.display = 'none';
   }
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const voteBtns = document.querySelectorAll('.vote-btn');
   voteBtns.forEach(btn => {
     btn.addEventListener('click', function handler(e) {
-      hideFirstVisitElements();
+      hideFirstVoteElements();
       // Remove this handler from all vote buttons
       voteBtns.forEach(b => b.removeEventListener('click', handler));
     });

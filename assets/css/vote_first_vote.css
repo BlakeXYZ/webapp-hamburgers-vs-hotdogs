@@ -53,6 +53,12 @@
     100% { left: 30%; }
 }
 
+
+#first-vote-text {
+  height: 0;
+  transform: translateY(-30px);
+}
+
 .click-animate {
     animation: pointerClick 5s cubic-bezier(0.4,0,0.4,1) infinite;
 }
