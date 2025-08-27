@@ -31,8 +31,7 @@
 {% endmacro %}
 
 {% macro first_visit_text() %}
-{# {% if not has_visited %} #}  {# TODO: Reimplement after testing #}
-{% if has_visited %}
+{% if not has_visited %}
 <div id="first-visit-text" class="container text-center ">
   <p class="first-visit-message"><em>Tap to Vote!</em></p>
 </div>
@@ -44,8 +43,7 @@
 
 
 {% macro first_visit_pointer() %}
-{# {% if not has_visited %} #}  {# TODO: Reimplement after testing #}
-{% if has_visited %}
+{% if not has_visited %}
  <div id="first-visit-pointer" class="path-animate">
     <div class="position-relative d-inline-block click-animate" style="width:2em; height:2em;">
       <i class="fa-solid fa-circle fa-2x text-white position-absolute top-0 start-0 w-100 h-100" style="opacity: 0.5;"></i>
