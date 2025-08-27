@@ -1,16 +1,3 @@
-function hasVisited() {
-  let visited = localStorage.getItem('has_visited');
-  if (!visited) {
-    localStorage.setItem('has_visited', 'true');
-    console.log("First visit detected.");
-    document.cookie = "has_visited=false; path=/; max-age=3600";
-    return false; // First visit
-  }
-  console.log("Has visited.");
-  document.cookie = "has_visited=true; path=/; max-age=3600";
-  return true; // Subsequent visits
-}
-
 function hideFirstVisitElements() {
   const pointer = document.getElementById('first-visit-pointer');
   const text = document.getElementById('first-visit-text');
@@ -24,13 +11,14 @@ function hideFirstVisitElements() {
 }
 
 
-
-// how to explicitly use hasVisited only for /home route
+// Ensure session_id is set as a cookie for backend access
 document.addEventListener('DOMContentLoaded', function() {
-  if (window.location.pathname === '/') {
-    hasVisited();
+  const sessionId = localStorage.getItem('session_id');
+  if (sessionId) {
+    document.cookie = `session_id=${sessionId}; path=/; max-age=31536000`;
   }
 });
+
 
 // Listen for first vote button click
 document.addEventListener('DOMContentLoaded', function() {
@@ -43,3 +31,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+

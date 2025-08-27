@@ -23,6 +23,27 @@
   }
 }
 
+@keyframes circleClick {
+  0% {
+    transform:  scale(1);
+  }
+  5% {
+    transform:  scale(1.15);
+  }
+  12%,
+  40% {
+    transform:  scale(1);
+  }
+  50% {
+    transform:  scale(1.15);
+  }
+  55%,
+  100% {
+    transform:  scale(1);
+  }
+}
+
+
 @keyframes containerPath {
     0%   { left: 30%; }
     5%   { left: 30%; }
@@ -44,5 +65,9 @@
   animation: containerPath 5s cubic-bezier(0.4,0,0.4,1) infinite;
   pointer-events: none;
   z-index: 10;
+}
+
+.path-animate-circle {
+    animation: circleClick 5s cubic-bezier(0.4,0,0.4,1) infinite;
 }
 
