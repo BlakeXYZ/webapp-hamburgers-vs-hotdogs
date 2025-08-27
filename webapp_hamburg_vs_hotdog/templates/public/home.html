@@ -30,23 +30,44 @@
 </div>
 {% endmacro %}
 
-{% macro first_visit_instructions() %}
+{% macro first_visit_text() %}
 {# {% if not has_visited %} #}  {# TODO: Reimplement after testing #}
 {% if has_visited %}
-<div class="container text-center mt-3">
-  <p class="first-visit-message">Welcome to the site! This is your first visit.</p>
+<div id="first-visit-text" class="container text-center ">
+  <p class="first-visit-message"><em>Tap to Vote!</em></p>
 </div>
+
 {% else %}
-<div class="container text-center mt-3">
-  <p class="return-visit-message">Welcome back!</p>
-</div>
 {% endif %}
 {% endmacro %}
 
 
+
+{% macro first_visit_pointer() %}
+{# {% if not has_visited %} #}  {# TODO: Reimplement after testing #}
+{% if has_visited %}
+ <div id="first-visit-pointer" class="path-animate">
+    <div class="position-relative d-inline-block click-animate" style="width:2em; height:2em;">
+      <i class="fa-solid fa-circle fa-2x text-white position-absolute top-0 start-0 w-100 h-100" style="opacity: 0.5;"></i>
+      <i class="fa-solid fa-arrow-pointer fa-1x position-absolute top-50 start-50" style="opacity: 1; transform: translate(-40%, -45%);"></i>
+    </div>
+  </div>
+
+{% else %}
+{% endif %}
+{% endmacro %}
+
+
+
+
+
 <div class="swiper-container mt-3">
-  {{ first_visit_instructions() }}
+  {{ first_visit_text() }}
+
+
   <div class="swiper mySwiper">
+  {{ first_visit_pointer() }}
+
     <div class="swiper-wrapper">
       {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
       {% for matchup in matchups %} 

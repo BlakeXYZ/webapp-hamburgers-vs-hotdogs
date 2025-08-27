@@ -1,0 +1,48 @@
+@keyframes pointerClick {
+  0% {
+    transform: translate(-40%, -45%) scale(1);
+    opacity: 0.7;
+  }
+  5% {
+    transform: translate(-40%, -30%) scale(0.95);
+    opacity: 1;
+  }
+  12%,
+  40% {
+    transform: translate(-40%, -45%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-40%, -30%) scale(0.95);
+    opacity: 1;
+  }
+  55%,
+  100% {
+    transform: translate(-40%, -45%) scale(1);
+    opacity: 0.7;
+  }
+}
+
+@keyframes containerPath {
+    0%   { left: 30%; }
+    5%   { left: 30%; }
+    45%  { left: 70%; }
+    55%  { left: 70%; }
+    95%  { left: 30%; }
+    100% { left: 30%; }
+}
+
+.click-animate {
+    animation: pointerClick 5s cubic-bezier(0.4,0,0.4,1) infinite;
+}
+
+.path-animate {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  width: 3em; /* match your pointer width */
+  animation: containerPath 5s cubic-bezier(0.4,0,0.4,1) infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
