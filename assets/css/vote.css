@@ -65,6 +65,14 @@
   translate: 0 -15px;
  
 }
+.gallery-contestant{
+    transition:
+      box-shadow 0.2s,
+      border 0.2s,
+      background 0.2s,
+      scale 0.2s,
+      translate 0.2s;
+}
 
 
 .matchup-contestant.gallery-contestant.btn[aria-pressed="true"] {
