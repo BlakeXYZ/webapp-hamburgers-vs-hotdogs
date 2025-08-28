@@ -66,6 +66,13 @@
  
 }
 
+
+.matchup-contestant.gallery-contestant.btn[aria-pressed="true"] {
+  scale: 1.02;
+  translate: 0 -5px;
+ 
+}
+
 /* Fixes button flashing when disabled */
 .vote-btn:disabled {
   opacity: 1;

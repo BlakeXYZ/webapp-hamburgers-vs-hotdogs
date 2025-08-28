@@ -8,13 +8,6 @@
 
     <div class="container ">
 
-    <div class="row">
-        <div class="mt-5 col-md-12 text-center" style="padding-right: 0px;">
-            <i class="fa-solid fa-person-digging fa-6x"></i>
-            <p class="lead"><em>This page is under construction!</em></p>
-        </div>
-    </div>
-
     <h1 class="mt-5">Gallery</h1>
     <div class="row">
       <p class="lead">Browse Contestants and view their profiles + stats!</p>
@@ -23,12 +16,17 @@
     <div class="row g-3 align-items-stretch">
     {% for contestant in contestants %}
         <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-            <div class="btn matchup-contestant p-2 text-center h-100" 
-            style="width: 100%;">
+            <button 
+            type="button"
+            class="btn matchup-contestant gallery-contestant p-2 text-center h-100" 
+            style="width: 100%;"
+            data-contestant-id="{{ contestant.id }}"
+            data-bs-toggle="button">
                 <div class="matchup-contestant-img-container bg-danger">☒</div>
                 <h6 class="text-center">{{ contestant.contestant_name }}</h6>
                 <p class="fw-light text-start">{{ contestant.contestant_description }}</p>
-            </div>
+                <p class="contestant-extra-info fw-light text-start" style="display:none">Stats go here!</p>
+            </button>
         </div>
     {% endfor %}
     </div>
