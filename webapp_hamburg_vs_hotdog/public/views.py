@@ -37,10 +37,14 @@ def home():
     """Home page."""
     contestants = db.session.query(Contestant).all()
     matchups = db.session.query(Matchup).all()
+    matchup_stats = {m.id: get_matchup_stats(m) for m in matchups} # Build a dict of matchup stats for all matchups
+    session_id = request.cookies.get('session_id')
+    has_voted = False
+    if session_id:
+        has_voted = db.session.query(Vote).filter_by(session_id=session_id).count() > 0
     
-    # Build a dict of matchup stats for all matchups
-    matchup_stats = {m.id: get_matchup_stats(m) for m in matchups}
-    return render_template("public/home.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats)
+    print(f"Session ID: {session_id}, Has Voted: {has_voted}")
+    return render_template("public/home.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats, session_id=session_id, has_voted=has_voted)
 
 
 @blueprint.route("/gallery/")

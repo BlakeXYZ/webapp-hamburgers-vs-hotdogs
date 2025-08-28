@@ -30,10 +30,38 @@
 </div>
 {% endmacro %}
 
+{% macro first_vote_text() %}
+{% if not has_voted %}
+<div id="first-vote-text" class="container text-center ">
+  <p class="first-vote-message"><em>Tap to Vote!</em></p>
+</div>
+{% else %}
+{% endif %}
+{% endmacro %}
+
+{% macro first_vote_animation() %}
+{% if not has_voted %}
+ <div id="first-vote-pointer" class="path-animate">
+    <div class="position-relative d-inline-block click-animate" style="width:2em; height:2em;">
+      <i class="path-animate-circle fa-solid fa-circle fa-2x text-white position-absolute top-0 start-0 w-100 h-100" style="opacity: 0.75;"></i>
+      <i class="fa-solid fa-arrow-pointer fa-1x position-absolute top-50 start-50" style="opacity: 1; transform: translate(-40%, -45%);"></i>
+    </div>
+  </div>
+{% else %}
+{% endif %}
+{% endmacro %}
+
+
+
 
 
 <div class="swiper-container mt-3">
+  {{ first_vote_text() }}
+
+
   <div class="swiper mySwiper">
+  {{ first_vote_animation() }}
+
     <div class="swiper-wrapper">
       {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
       {% for matchup in matchups %} 

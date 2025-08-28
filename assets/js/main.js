@@ -21,3 +21,4 @@ require("./script");
 require('./vote_confetti.js');
 require('./vote_stats.js');
 require('./vote_swiper.js');
+require('./vote_first_vote.js');
