@@ -66,6 +66,9 @@
  
 }
 .gallery-contestant{
+
+  min-height: 265px;
+
     transition:
       box-shadow 0.2s,
       border 0.2s,
@@ -73,6 +76,16 @@
       scale 0.2s,
       translate 0.2s;
 }
+
+
+
+/* Small devices (min-width: 576px) */
+@media (min-width: 576px) {
+  .gallery-contestant {
+    min-height: 345px;
+  }
+}
+
 
 
 .matchup-contestant.gallery-contestant.btn[aria-pressed="true"] {
