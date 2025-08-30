@@ -8,15 +8,20 @@
             <span>Total Votes</span> 
             <div class="flex-grow-1 border-bottom border-secondary border-opacity-75 mx-2"></div>
             <span class="text-end">{{ contestants_stats[contestant.id].total_votes }}</span>
-            </div>
+        </div>
+        <div class="fw-light d-flex justify-content-between">
+            <span>Total Matchups</span>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].total_matchups }}</span>
+        </div>
         <div class="fw-light d-flex justify-content-between">
             <span>Wins</span>
-            <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 mx-2"></div>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-75 mx-2"></div>
             <span class="text-end">{{ contestants_stats[contestant.id].wins }}</span>
         </div>
         <div class="fw-light d-flex justify-content-between">
             <span>Losses</span>
-            <div class="flex-grow-1 border-bottom border-secondary border-opacity-75 mx-2"></div>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 mx-2"></div>
             <span class="text-end">{{ contestants_stats[contestant.id].losses }}</span>
         </div>
     </div>

@@ -3,6 +3,7 @@ from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant
 def get_contestant_stats(contestant: Contestant):
     """Return a dict of contestant stats for API or JS use."""
     total_votes = len(contestant.votes)
+    total_matchups = len(contestant.all_matchups)
     wins = 0
     losses = 0
 
@@ -25,6 +26,7 @@ def get_contestant_stats(contestant: Contestant):
         'contestant_id': contestant.id,
         'contestant_name': contestant.contestant_name,
         'total_votes': total_votes,
+        'total_matchups': total_matchups,
         'wins': wins,
         'losses': losses,
     }
