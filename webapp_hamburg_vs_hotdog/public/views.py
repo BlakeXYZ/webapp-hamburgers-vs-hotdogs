@@ -22,6 +22,7 @@ from webapp_hamburg_vs_hotdog.database import db
 
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote
 from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_matchup_stats import get_matchup_stats
+from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_contestant_stats import get_contestant_stats
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
@@ -43,7 +44,6 @@ def home():
     if session_id:
         has_voted = db.session.query(Vote).filter_by(session_id=session_id).count() > 0
     
-    print(f"Session ID: {session_id}, Has Voted: {has_voted}")
     return render_template("public/home.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats, session_id=session_id, has_voted=has_voted)
 
 
@@ -51,7 +51,9 @@ def home():
 def gallery():
     """Gallery page."""
     contestants = db.session.query(Contestant).all()
-    return render_template("public/gallery.html", contestants=contestants)
+    contestants_stats = {c.id: get_contestant_stats(c) for c in contestants} # Build a dict of contestant stats for all contestants
+
+    return render_template("public/gallery.html", contestants=contestants, contestants_stats=contestants_stats)
 
 
 

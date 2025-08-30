@@ -2,7 +2,25 @@
 
 {% block content %}
 
-
+{% macro contestant_stats_revealed_onClick(contestant) %}
+    <div class="contestant-stats mb-2"  style="display:none">
+        <div class="fw-light d-flex justify-content-between">
+            <span>Total Votes</span> 
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-75 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].total_votes }}</span>
+            </div>
+        <div class="fw-light d-flex justify-content-between">
+            <span>Wins</span>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].wins }}</span>
+        </div>
+        <div class="fw-light d-flex justify-content-between">
+            <span>Losses</span>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-75 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].losses }}</span>
+        </div>
+    </div>
+{% endmacro %}
 
 
 
@@ -18,14 +36,14 @@
         <div class="col-6 col-sm-6 col-md-4 col-lg-3">
             <button 
             type="button"
-            class="btn matchup-contestant gallery-contestant p-2 text-center h-100" 
+            class="btn matchup-contestant gallery-contestant text-center h-100" 
             style="width: 100%;"
             data-contestant-id="{{ contestant.id }}"
             data-bs-toggle="button">
                 <div class="matchup-contestant-img-container bg-danger">☒</div>
                 <h6 class="text-center">{{ contestant.contestant_name }}</h6>
-                <p class="fw-light text-start">{{ contestant.contestant_description }}</p>
-                <p class="contestant-extra-info fw-light text-start" style="display:none">Stats go here!</p>
+                <p class="fw-light text-start" style="max-height: 2.8em; min-height: 2.8em;">{{ contestant.contestant_description }}</p>
+                {{ contestant_stats_revealed_onClick(contestant=contestant) }}
             </button>
         </div>
     {% endfor %}
