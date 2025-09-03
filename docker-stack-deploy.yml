@@ -61,6 +61,7 @@ services:
       - db
 
   #TODO: investigate best practice to store/backup database data
+  #TODO: setup pgadmin - https://stackoverflow.com/questions/77736033/docker-compose-postgres-pgadmin-setup
   db:
     image: postgres
     user: postgres
