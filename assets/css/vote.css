@@ -42,7 +42,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 2%;
+  padding: 7px;
 
   transition:
     box-shadow 0.2s,
@@ -63,6 +63,38 @@
   border-color: var(--bs-border-color);
   scale: 1.05;
   translate: 0 -15px;
+ 
+}
+.gallery-contestant{
+
+  min-height: 265px;
+
+    transition:
+      box-shadow 0.2s,
+      border 0.2s,
+      background 0.2s,
+      scale 0.2s,
+      translate 0.2s;
+}
+
+
+
+/* Small devices (min-width: 576px) */
+@media (min-width: 576px) {
+  .matchup-contestant {
+    padding: 10px;
+  }
+ 
+  .gallery-contestant {
+    min-height: 345px;
+  }
+}
+
+
+
+.matchup-contestant.gallery-contestant.btn[aria-pressed="true"] {
+  scale: 1.02;
+  translate: 0 -5px;
  
 }
 

@@ -2,33 +2,54 @@
 
 {% block content %}
 
-
+{% macro contestant_stats_revealed_onClick(contestant) %}
+    <div class="contestant-stats mb-2"  style="display:none">
+        <div class="fw-light d-flex justify-content-between">
+            <span>Total Votes</span> 
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-75 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].total_votes }}</span>
+        </div>
+        <div class="fw-light d-flex justify-content-between">
+            <span>Total Matchups</span>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].total_matchups }}</span>
+        </div>
+        <div class="fw-light d-flex justify-content-between">
+            <span>Wins</span>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-75 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].wins }}</span>
+        </div>
+        <div class="fw-light d-flex justify-content-between">
+            <span>Losses</span>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 mx-2"></div>
+            <span class="text-end">{{ contestants_stats[contestant.id].losses }}</span>
+        </div>
+    </div>
+{% endmacro %}
 
 
 
     <div class="container ">
 
-    <div class="row">
-        <div class="mt-5 col-md-12 text-center" style="padding-right: 0px;">
-            <i class="fa-solid fa-person-digging fa-6x"></i>
-            <p class="lead"><em>This page is under construction!</em></p>
-        </div>
-    </div>
-
     <h1 class="mt-5">Gallery</h1>
     <div class="row">
-      <p class="lead">Browse Contestants and view their profiles + stats!</p>
+      <p class="lead">Browse Contestants and <em>tap</em> to view their stats!</p>
     </div>
 
-    <div class="row g-3 align-items-stretch">
+    <div class="row g-3 align-items-start">
     {% for contestant in contestants %}
         <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-            <div class="btn matchup-contestant p-2 text-center h-100" 
-            style="width: 100%;">
+            <button 
+            type="button"
+            class="btn matchup-contestant gallery-contestant text-center h-100" 
+            style="width: 100%;"
+            data-contestant-id="{{ contestant.id }}"
+            data-bs-toggle="button">
                 <div class="matchup-contestant-img-container bg-danger">☒</div>
                 <h6 class="text-center">{{ contestant.contestant_name }}</h6>
-                <p class="fw-light text-start">{{ contestant.contestant_description }}</p>
-            </div>
+                <p class="fw-light text-start" style="max-height: 2.8em; min-height: 2.8em;">{{ contestant.contestant_description }}</p>
+                {{ contestant_stats_revealed_onClick(contestant=contestant) }}
+            </button>
         </div>
     {% endfor %}
     </div>
