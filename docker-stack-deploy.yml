@@ -89,6 +89,8 @@ services:
       - pgadmin-password
     depends_on:
       - web
+    ports:
+      - "8081:80"
 
 volumes:
   db-data:
