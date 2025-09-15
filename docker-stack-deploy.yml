@@ -91,6 +91,8 @@ services:
       - web
     ports:
       - "8081:80"
+    networks:
+      - webnet
 
 volumes:
   db-data:
