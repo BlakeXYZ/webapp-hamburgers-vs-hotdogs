@@ -86,7 +86,7 @@ services:
       - PGADMIN_DEFAULT_EMAIL=artificialblakek@gmail.com
     secrets:
       - pgadmin-password
-    entrypoint: ["/bin/sh", "-c", "echo \"PGADMIN_DEFAULT_PASSWORD=$(cat /run/secrets/pgadmin-password)\" >> /pgadmin4/config_local.py && /entrypoint.sh"]
+    entrypoint: ["/bin/sh", "-c", "echo \"PGADMIN_DEFAULT_PASSWORD=$$(cat /run/secrets/pgadmin-password)\" >> /pgadmin4/config_local.py && /entrypoint.sh"]
     depends_on:
       - web
     ports:
