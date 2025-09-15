@@ -80,12 +80,24 @@ services:
       timeout: 5s
       retries: 5
 
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: artificialblakek@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: /run/secrets/pgadmin-password
+    secrets:
+      - pgadmin-password
+    depends_on:
+      - web
+
 volumes:
   db-data:
   letsencrypt:
 
 secrets:
   db-password:
+    external: true
+  pgadmin-password:
     external: true
 
 networks:
