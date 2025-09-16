@@ -126,6 +126,15 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 2%;
+  overflow: hidden; /* Prevent child overflow */
+
+}
+
+.matchup-contestant-img-container img {
+  border-radius: 14px;
+  width: 96%;
+  height: auto;
+  object-fit: contain;
 }
 
 .matchup-vs-overlay-container {

@@ -87,7 +87,9 @@
           data-contestant-id="{{ matchup.contestant_a_id }}"          
           data-bs-toggle="button">
 
-            <div class="matchup-contestant-img-container {{ color_a }}">☒</div>
+            <div class="matchup-contestant-img-container {{ color_a }}">
+              <img src="{{ static_url_for('static', filename='build/' ~ matchup.contestant_a.contestant_img) }}" alt="{{ matchup.contestant_a.contestant_name }} Img">
+            </div>
             <h6 class="text-center">{{ matchup.contestant_a.contestant_name }}</h6>
             <p class="fw-light text-start">{{ matchup.contestant_a.contestant_description }}</p>
           </button>
@@ -99,7 +101,9 @@
           data-contestant-id="{{ matchup.contestant_b_id }}"
           data-bs-toggle="button">
 
-            <div class="matchup-contestant-img-container {{ color_b }}">☒</div>
+            <div class="matchup-contestant-img-container {{ color_b }}">
+              <img src="{{ static_url_for('static', filename='build/' ~ matchup.contestant_b.contestant_img) }}" alt="{{ matchup.contestant_b.contestant_name }} Img">
+            </div>
             <h6 class="text-center">{{ matchup.contestant_b.contestant_name }}</h6>
             <p class="fw-light text-start">{{ matchup.contestant_b.contestant_description }}</p>
           </button>
