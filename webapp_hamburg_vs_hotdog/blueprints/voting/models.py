@@ -16,6 +16,7 @@ class Contestant(Model):
     id:                        so.Mapped[int] = so.mapped_column(primary_key=True)
     contestant_name:           so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     contestant_description:    so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
+    contestant_img:            so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
 
     matchups_as_a:      so.Mapped[list['Matchup']] = so.relationship(
         'Matchup', 
