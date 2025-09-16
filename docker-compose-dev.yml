@@ -6,11 +6,25 @@ x-default-volumes: &default_volumes
   volumes:
     - ./:/app
     - node-modules:/app/node_modules
-    - ./dev.db:/tmp/dev.db
+    # Remove or comment out the SQLite line below
+    # - ./dev.db:/tmp/dev.db
 
 # Build flask-dev environment using powershell (not in ubuntu, wsl shell)
 # cmd: docker compose up flask-dev
 services:
+
+
+  db-dev:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
   flask-dev:
     build:
       context: .
@@ -21,7 +35,27 @@ services:
     ports:
       - "8080:5000"
       - "2992:2992"
+    environment:
+      FLASK_ENV: development
+      FLASK_DEBUG: 1
+      DATABASE_URL: postgresql://postgres:password@db-dev:5432/app
+    depends_on:
+      - db-dev
     <<: *default_volumes
+
+  pgadmin-dev:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "8081:80"
+    networks:
+      - default
+    depends_on:
+      - flask-dev
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
 
 
   # manage service for running Flask commands
@@ -47,3 +81,5 @@ services:
 
 volumes:
   node-modules:
+  pgadmin-data:
+  pg-data:
