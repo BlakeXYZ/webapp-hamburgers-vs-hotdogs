@@ -34,6 +34,7 @@
     "@popperjs/core": "2.11.8",
     "bootstrap": "5.3.6",
     "canvas-confetti": "^1.9.3",
+    "chart.js": "^4.5.0",
     "jquery": "3.7.1",
     "swiper": "^11.2.10"
   },

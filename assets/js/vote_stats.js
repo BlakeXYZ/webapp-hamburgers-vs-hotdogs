@@ -1,5 +1,69 @@
 import { swiper } from './vote_swiper.js';
 import { Collapse } from 'bootstrap';
+import Chart from 'chart.js/auto';
+
+
+// Doughnut chart rendering logic with dummy data
+function renderDoughnutChart(stats) {
+
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
+    const statsContainer = document.getElementById('matchup-stats-collapse-content');
+    const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
+    const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
+
+    
+    // Use dummy data for now
+    const data = {
+        labels: [
+            stats.contestant_b_name,
+            stats.contestant_a_name
+        ],
+        datasets: [{
+            label: 'Votes',
+            data: [stats.votes_b, stats.votes_a],
+            backgroundColor: [
+                getComputedStyle(activeSlide).getPropertyValue('--bs-' + activeSlideMatchupContestantBColor.replace('bg-', '')) || '#dc3545',
+                getComputedStyle(activeSlide).getPropertyValue('--bs-' + activeSlideMatchupContestantAColor.replace('bg-', '')) || '#0d6efd'
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    // Remove any existing chart instance to avoid duplicates
+    if (window.doughnutChartInstance) {
+        window.doughnutChartInstance.destroy();
+    }
+
+    const ctx = document.getElementById('acquisitions');
+    if (ctx) {
+        window.doughnutChartInstance = new Chart(
+            ctx,
+            {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    rotation: 0,
+                    plugins: {
+                        legend: {
+                            display: false // Hide legend
+                        }
+                    }
+                }
+            }
+
+        );
+        // console.log('------- Doughnut chart initialized');
+    }
+}
+
+function statsContentDoughnutChart(stats) {
+    return `<div><canvas id="acquisitions"></canvas></div>`;
+}
+
+
+
 
 function getSessionId() {
   let sessionId = localStorage.getItem('session_id');
@@ -161,7 +225,9 @@ function initializeStatsContent( retryCount = 0 ) {
             ${statsContentTotalVotesText(stats)}
             ${statsContentProgressBar(activeSlide, stats)}
             ${statsContentVotesForText(stats)}
+            ${statsContentDoughnutChart(stats)}
         `;
+        renderDoughnutChart(stats);
 
     } else {
         statsContainer.textContent = '';
