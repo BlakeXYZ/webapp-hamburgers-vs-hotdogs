@@ -239,12 +239,20 @@ function expandViewStats() {
     if (!collapseContent) return;
     const bsCollapse = Collapse.getOrCreateInstance(collapseContent);
     bsCollapse.show();
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.textContent = 'Hide Stats';
+ 
 }
 
 function collapseViewStats() {
     const collapseContent = document.getElementById('matchup-stats-collapse');
     collapseContent.classList.add('collapse');
     collapseContent.classList.remove('show');
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.textContent = 'View Stats';
+
 }
 
 swiper.on('slideChange', function () {
@@ -266,4 +274,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // console.log('Slide changed to index:', swiper.activeIndex);
             // console.log('============== Matchup stats loaded:', window.matchupStats);
         });
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.addEventListener('click', function() {
+        if (this.getAttribute('aria-expanded') === 'true') {
+            // Currently expanded, so collapse
+            collapseMatchupBtn.textContent = 'Hide Stats';
+        } else {
+            // Currently collapsed, so expand
+            collapseMatchupBtn.textContent = 'View Stats';
+        }
+    });
 });
