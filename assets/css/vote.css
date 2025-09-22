@@ -184,3 +184,8 @@
 
 /* .collapse_container {
 } */
+
+.doughnut-chart-container {
+  position: relative;
+  padding: 2% 25%;
+}

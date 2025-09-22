@@ -59,7 +59,7 @@ function renderDoughnutChart(stats) {
 }
 
 function statsContentDoughnutChart(stats) {
-    return `<div><canvas id="acquisitions"></canvas></div>`;
+    return `<div class="doughnut-chart-container"><canvas id="acquisitions"></canvas></div>`;
 }
 
 
