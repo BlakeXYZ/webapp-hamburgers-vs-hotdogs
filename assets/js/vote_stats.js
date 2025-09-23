@@ -1,6 +1,6 @@
 import { swiper } from './vote_swiper.js';
 import { Collapse } from 'bootstrap';
-import Chart from 'chart.js/auto';
+import { Chart } from 'chart.js/auto';
 
 // function getGeoIpInfo() {
 //     const cacheKey = 'geoip_info';
@@ -309,6 +309,21 @@ function setupVoteDelegation() {
     });
 }
 
+function setupCollapseMatchupBtnListener() {
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    if (!collapseMatchupBtn) return;
+
+    collapseMatchupBtn.addEventListener('click', function() {
+        if (this.getAttribute('aria-expanded') === 'true') {
+            // Currently expanded, so collapse
+            collapseMatchupBtn.textContent = 'Hide Stats';
+        } else {
+            // Currently collapsed, so expand
+            collapseMatchupBtn.textContent = 'View Stats';
+        }
+    });
+}
+
 function initializeSlideVoteButtons() {
     // for each btn in active slide, fetch data-matchup-id
     // fetch window.matchupstats[session_id_matchup_vote_is]
@@ -347,6 +362,7 @@ function expandViewStats() {
 
 function collapseViewStats() {
     const collapseContent = document.getElementById('matchup-stats-collapse');
+    if (!collapseContent) return;
     collapseContent.classList.add('collapse');
     collapseContent.classList.remove('show');
 
@@ -364,6 +380,7 @@ swiper.on('slideChange', function () {
 // Initialize stats content on page load
 document.addEventListener('DOMContentLoaded', function() {
     const sessionId = getSessionId();
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
     fetch(`/api/matchup_stats/?session_id=${encodeURIComponent(sessionId)}`)
         .then(response => response.json())
         .then(data => {
@@ -371,18 +388,8 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeStatsContent(10);
             initializeSlideVoteButtons();
             setupVoteDelegation();
+            setupCollapseMatchupBtnListener();
             // console.log('Slide changed to index:', swiper.activeIndex);
             // console.log('============== Matchup stats loaded:', window.matchupStats);
         });
-
-    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
-    collapseMatchupBtn.addEventListener('click', function() {
-        if (this.getAttribute('aria-expanded') === 'true') {
-            // Currently expanded, so collapse
-            collapseMatchupBtn.textContent = 'Hide Stats';
-        } else {
-            // Currently collapsed, so expand
-            collapseMatchupBtn.textContent = 'View Stats';
-        }
-    });
 });
