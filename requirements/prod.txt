@@ -38,3 +38,6 @@ Flask-DebugToolbar==0.16.0
 
 # Environment variable parsing
 environs==14.2.0
+
+# random name generator
+coolname==2.2.0

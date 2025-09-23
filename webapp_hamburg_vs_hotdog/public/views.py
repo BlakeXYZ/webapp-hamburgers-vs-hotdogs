@@ -24,6 +24,8 @@ from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchu
 from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_matchup_stats import get_matchup_stats
 from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_contestant_stats import get_contestant_stats
 
+from webapp_hamburg_vs_hotdog.blueprints.comments.utils.commentor_name_gen import print_random_name
+
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
 
@@ -87,8 +89,11 @@ def register():
 @blueprint.route("/about/")
 def about():
     """About page."""
+    session_id = request.cookies.get('session_id')
+
     form = LoginForm(request.form)
-    return render_template("public/about.html", form=form)
+    random_name = print_random_name(session_id)
+    return render_template("public/about.html", form=form, session_id=session_id, random_name=random_name)
 
 
 
