@@ -23,3 +23,4 @@ require('./vote_stats.js');
 require('./vote_swiper.js');
 require('./vote_first_vote.js');
 require('./gallery_click.js');
+require('./comment_profile_icon.js');

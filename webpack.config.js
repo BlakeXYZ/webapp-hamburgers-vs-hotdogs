@@ -30,6 +30,7 @@ module.exports = {
       path.join(__dirname, 'assets', 'css', 'vote.css'),
       path.join(__dirname, 'assets', 'css', 'vote_first_vote.css'),
       path.join(__dirname, 'assets', 'css', 'gallery_stats.css'),
+      path.join(__dirname, 'assets', 'css', 'comment_profile_icon.css'),
     ],
   },
   mode: debug,
