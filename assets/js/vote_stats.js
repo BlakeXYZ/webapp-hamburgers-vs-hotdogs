@@ -1,14 +1,6 @@
 import { swiper } from './vote_swiper.js';
 import { Collapse } from 'bootstrap';
-
-function getSessionId() {
-  let sessionId = localStorage.getItem('session_id');
-  if (!sessionId) {
-    sessionId = crypto.randomUUID(); // For modern browsers
-    localStorage.setItem('session_id', sessionId);
-  }
-  return sessionId;
-}
+import Chart from 'chart.js/auto';
 
 // function getGeoIpInfo() {
 //     const cacheKey = 'geoip_info';
@@ -57,6 +49,110 @@ function getSessionId() {
 //         confetti_red();
 //     }
 // }
+
+// Doughnut chart rendering logic with dummy data
+function renderDoughnutChart(stats) {
+
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
+    const statsContainer = document.getElementById('matchup-stats-collapse-content');
+    const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
+    const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
+
+    const data = {
+        labels: [
+            stats.contestant_b_name,
+            stats.contestant_a_name
+        ],
+        datasets: [{
+            label: 'Votes',
+            data: [stats.votes_b, stats.votes_a],
+            backgroundColor: [
+                getComputedStyle(activeSlide).getPropertyValue('--bs-' + activeSlideMatchupContestantBColor.replace('bg-', '')) || '#dc3545',
+                getComputedStyle(activeSlide).getPropertyValue('--bs-' + activeSlideMatchupContestantAColor.replace('bg-', '')) || '#0d6efd'
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    // Remove any existing chart instance to avoid duplicates
+    if (window.doughnutChartInstance) {
+        window.doughnutChartInstance.destroy();
+    }
+
+    const ctx = document.getElementById('acquisitions');
+    if (ctx) {
+        window.doughnutChartInstance = new Chart(
+            ctx,
+            {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    rotation: 0,
+                    plugins: {
+                        legend: {
+                            display: false // Hide legend
+                        }
+                    }
+                }
+            }
+
+        );
+    }
+}
+
+function statsContentDoughnutChart() {
+    return `<div class="doughnut-chart-container"><canvas id="acquisitions"></canvas></div>`;
+}
+
+function updateStatsDoughtnutChart() {
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
+    const statsContainer = document.getElementById('matchup-stats-collapse-content');
+    const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
+    const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
+    
+    if (activeSlideMatchupId && window.matchupStats && window.matchupStats[activeSlideMatchupId]) {
+        const stats = window.matchupStats[activeSlideMatchupId];
+        const chart = window.doughnutChartInstance;
+        const data = {
+            labels: [
+                stats.contestant_b_name,
+                stats.contestant_a_name
+            ],
+            datasets: [{
+                label: 'Votes',
+                data: [stats.votes_b, stats.votes_a],
+                backgroundColor: [
+                    getComputedStyle(activeSlide).getPropertyValue('--bs-' + activeSlideMatchupContestantBColor.replace('bg-', '')) || '#dc3545',
+                    getComputedStyle(activeSlide).getPropertyValue('--bs-' + activeSlideMatchupContestantAColor.replace('bg-', '')) || '#0d6efd'
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        if (chart) {
+            chart.data.datasets[0].data = data.datasets[0].data;
+            chart.data.datasets[0].backgroundColor = data.datasets[0].backgroundColor;
+            // If you want to update labels:
+            chart.data.labels = data.labels;
+            chart.update();
+        }
+    }
+}
+
+
+function getSessionId() {
+  let sessionId = localStorage.getItem('session_id');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID(); // For modern browsers
+    localStorage.setItem('session_id', sessionId);
+  }
+  return sessionId;
+}
+
 
 function statsContentTotalVotesText(stats) {
     // Update the vote text with the percentage values
@@ -144,6 +240,7 @@ function updateStatsContent(retryCount = 0) {
     // console.log('active slide matchup id:', activeSlideMatchupId);
 }
 
+
 function initializeStatsContent( retryCount = 0 ) {
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
@@ -161,7 +258,9 @@ function initializeStatsContent( retryCount = 0 ) {
             ${statsContentTotalVotesText(stats)}
             ${statsContentProgressBar(activeSlide, stats)}
             ${statsContentVotesForText(stats)}
+            ${statsContentDoughnutChart()}
         `;
+        renderDoughnutChart(stats);
 
     } else {
         statsContainer.textContent = '';
@@ -201,6 +300,7 @@ function setupVoteDelegation() {
             const data = await response.json();
             window.matchupStats[data.matchup_id] = data;
             updateStatsContent();
+            updateStatsDoughtnutChart();
             initializeSlideVoteButtons();
             expandViewStats();
         } finally {
@@ -239,12 +339,20 @@ function expandViewStats() {
     if (!collapseContent) return;
     const bsCollapse = Collapse.getOrCreateInstance(collapseContent);
     bsCollapse.show();
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.textContent = 'Hide Stats';
+ 
 }
 
 function collapseViewStats() {
     const collapseContent = document.getElementById('matchup-stats-collapse');
     collapseContent.classList.add('collapse');
     collapseContent.classList.remove('show');
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.textContent = 'View Stats';
+
 }
 
 swiper.on('slideChange', function () {
@@ -266,4 +374,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // console.log('Slide changed to index:', swiper.activeIndex);
             // console.log('============== Matchup stats loaded:', window.matchupStats);
         });
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.addEventListener('click', function() {
+        if (this.getAttribute('aria-expanded') === 'true') {
+            // Currently expanded, so collapse
+            collapseMatchupBtn.textContent = 'Hide Stats';
+        } else {
+            // Currently collapsed, so expand
+            collapseMatchupBtn.textContent = 'View Stats';
+        }
+    });
 });
