@@ -3,18 +3,37 @@ import { thumbs } from '@dicebear/collection';
 
 
 
-document.querySelectorAll('.comment-profile-icon').forEach(function(el) {
+function applyAvatarsToCommentIcons(root = document) {
+  root.querySelectorAll('.comment-profile-icon').forEach(function(el) {
+    if (el.getAttribute('data-avatar-applied')) return;
     const session_ids = el.getAttribute('data-session-id');
     const avatar = createAvatar(thumbs, {
       seed: session_ids,
       "size": 48, 
       "scale": 75,
       "radius": 50,
-
     });
-
     el.innerHTML = avatar.toString();
+    el.setAttribute('data-avatar-applied', 'true');
+  });
+}
+
+// Listen for dynamically added elements
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (node.nodeType === 1) { // ELEMENT_NODE
+        if (node.classList.contains('comment-profile-icon')) {
+          applyAvatarsToCommentIcons(node.parentNode);
+        } else {
+          applyAvatarsToCommentIcons(node);
+        }
+      }
+    });
+  });
 });
+
+observer.observe(document.body, { childList: true, subtree: true });
 
 const sessionId = localStorage.getItem('session_id');
 

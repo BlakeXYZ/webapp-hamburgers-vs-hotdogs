@@ -50,6 +50,80 @@ import { Chart } from 'chart.js/auto';
 //     }
 // }
 
+function getSessionId() {
+  let sessionId = localStorage.getItem('session_id');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID(); // For modern browsers
+    localStorage.setItem('session_id', sessionId);
+  }
+  return sessionId;
+}
+
+
+function statsContentMatchupCommentTitle(stats) {
+
+    const matchup_comment_count = stats.matchup_comments ? stats.matchup_comments.length : 0;
+    return `<br><br><h5 class="mb-3">${matchup_comment_count} Comments</h5>`;
+}
+
+function statsContentMatchupAddComment(stats){
+
+    const sessionId = getSessionId();
+    const matchup_add_comment_block = `
+        <div class="d-flex align-items-start mb-3">
+            <div class="comment-profile-icon me-2" data-session-id="${sessionId}"></div>
+            <div class="flex-grow-1 w-100">
+                <div class="d-flex align-items-center">
+                    <textarea class="form-control mb-2 me-2" rows="2" placeholder="Add a comment..." maxlength="300" style="resize: vertical;"></textarea>
+                    <button type="button" class="btn btn-sm btn-primary submit-comment-btn ms-1 align-self-center">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    return matchup_add_comment_block;
+
+}
+
+function statsContentMatchupComments(stats){
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
+    const statsContainer = document.getElementById('matchup-stats-collapse-content');
+
+    if (stats.matchup_comments && stats.matchup_comments.length > 0) {
+        let comment_block = '';
+        stats.matchup_comments.forEach(comment => {
+            comment_block += `
+                <div class="comment mb-3">
+                    <div class="d-flex align-items-start">
+                        <div class="comment-profile-icon me-2" data-session-id="${comment.session_id}"></div>
+                        <div>
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="badge bg-info text-light me-2">${comment.coolname}</span>
+                                <span class="text-muted small">${comment.time_ago}</span>
+                            </div>
+                            <div class="fw-normal">${comment.text}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        return comment_block;
+    }
+
+    return `<div class="comment"><em>No comments yet.</em></div>`;
+
+}
+
+
+
+
+
+
+
 // Doughnut chart rendering logic with dummy data
 function renderDoughnutChart(stats) {
 
@@ -144,14 +218,7 @@ function updateStatsDoughtnutChart() {
 }
 
 
-function getSessionId() {
-  let sessionId = localStorage.getItem('session_id');
-  if (!sessionId) {
-    sessionId = crypto.randomUUID(); // For modern browsers
-    localStorage.setItem('session_id', sessionId);
-  }
-  return sessionId;
-}
+
 
 
 function statsContentTotalVotesText(stats) {
@@ -259,6 +326,9 @@ function initializeStatsContent( retryCount = 0 ) {
             ${statsContentProgressBar(activeSlide, stats)}
             ${statsContentVotesForText(stats)}
             ${statsContentDoughnutChart()}
+            ${statsContentMatchupCommentTitle(stats)}
+            ${statsContentMatchupAddComment(stats)}
+            ${statsContentMatchupComments(stats)}
         `;
         renderDoughnutChart(stats);
 
@@ -309,6 +379,9 @@ function setupVoteDelegation() {
     });
 }
 
+const collapseMatchupBtn_toggle_off = 'Hide Details';
+const collapseMatchupBtn_toggle_on = 'View Details';
+
 function setupCollapseMatchupBtnListener() {
     const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
     if (!collapseMatchupBtn) return;
@@ -316,10 +389,10 @@ function setupCollapseMatchupBtnListener() {
     collapseMatchupBtn.addEventListener('click', function() {
         if (this.getAttribute('aria-expanded') === 'true') {
             // Currently expanded, so collapse
-            collapseMatchupBtn.textContent = 'Hide Stats';
+            collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_off;
         } else {
             // Currently collapsed, so expand
-            collapseMatchupBtn.textContent = 'View Stats';
+            collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_on;
         }
     });
 }
@@ -356,8 +429,8 @@ function expandViewStats() {
     bsCollapse.show();
 
     const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
-    collapseMatchupBtn.textContent = 'Hide Stats';
- 
+    collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_off;
+
 }
 
 function collapseViewStats() {
@@ -367,7 +440,7 @@ function collapseViewStats() {
     collapseContent.classList.remove('show');
 
     const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
-    collapseMatchupBtn.textContent = 'View Stats';
+    collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_on;
 
 }
 
@@ -389,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeSlideVoteButtons();
             setupVoteDelegation();
             setupCollapseMatchupBtnListener();
-            // console.log('Slide changed to index:', swiper.activeIndex);
-            // console.log('============== Matchup stats loaded:', window.matchupStats);
+            console.log('Slide changed to index:', swiper.activeIndex);
+            console.log('============== Matchup stats loaded:', window.matchupStats);
         });
 });

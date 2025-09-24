@@ -25,7 +25,7 @@ from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_matchup_stats import g
 from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_contestant_stats import get_contestant_stats
 
 from webapp_hamburg_vs_hotdog.blueprints.comment.models import Comment
-from webapp_hamburg_vs_hotdog.blueprints.comment.utils.commentor_name_gen import build_session_ids_coolname, time_ago
+from webapp_hamburg_vs_hotdog.blueprints.comment.utils.commentor_name_gen import build_session_ids_coolname, build_comment_time_ago
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
@@ -47,7 +47,13 @@ def home():
     if session_id:
         has_voted = db.session.query(Vote).filter_by(session_id=session_id).count() > 0
     
-    return render_template("public/home.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats, session_id=session_id, has_voted=has_voted)
+    return render_template("public/home.html", 
+                           contestants=contestants, 
+                           matchups=matchups, 
+                           matchup_stats=matchup_stats, 
+                           session_id=session_id, 
+                           has_voted=has_voted,
+                           )
 
 
 @blueprint.route("/gallery/")
@@ -95,7 +101,10 @@ def about():
     form = LoginForm(request.form)
     comments = db.session.query(Comment).order_by(Comment.timestamp.desc()).all()
 
-    return render_template("public/about.html", form=form, session_id=session_id, comments=comments, build_session_ids_coolname=build_session_ids_coolname, time_ago=time_ago)
-
-
-
+    return render_template("public/about.html", 
+                           form=form, 
+                           session_id=session_id, 
+                           comments=comments, 
+                           build_session_ids_coolname=build_session_ids_coolname, 
+                           build_comment_time_ago=build_comment_time_ago
+                           )
