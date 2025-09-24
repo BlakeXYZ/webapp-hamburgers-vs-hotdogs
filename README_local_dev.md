@@ -12,10 +12,10 @@
 
 --- 
 
-##### flask db migration command (must run in powershell):
+##### flask db migration command (must run in powershell WITH containers running!):
     docker compose -f docker-compose-dev.yml run --rm manage db migrate -m "implement Click Test table"
 
-##### flask db, apply changes to db, upgrade (must run in powershell):
+##### flask db, apply changes to db, upgrade (must run in powershell WITH containers running!):
     docker compose -f docker-compose-dev.yml run --rm manage db upgrade
 
 ##### flask db, print history (must run in powershell):

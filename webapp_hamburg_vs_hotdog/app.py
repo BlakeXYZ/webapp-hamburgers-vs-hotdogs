@@ -6,7 +6,7 @@ import sys
 from flask import Flask, render_template
 
 from webapp_hamburg_vs_hotdog import commands, public
-from webapp_hamburg_vs_hotdog.blueprints import user, voting
+from webapp_hamburg_vs_hotdog.blueprints import user, voting, comment
 from webapp_hamburg_vs_hotdog.extensions import (
     bcrypt,
     cache,
@@ -52,6 +52,7 @@ def register_blueprints(app):
     app.register_blueprint(public.views.blueprint)
     app.register_blueprint(user.views.blueprint)
     app.register_blueprint(voting.views.blueprint)
+    app.register_blueprint(comment.views.blueprint)
     # Exempt blueprints from CSRF protection
     csrf_protect.exempt(voting.views.blueprint)
 

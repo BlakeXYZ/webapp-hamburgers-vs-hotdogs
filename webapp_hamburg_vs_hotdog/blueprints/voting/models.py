@@ -7,6 +7,7 @@ import sqlalchemy.orm as so
 from webapp_hamburg_vs_hotdog.database import Model, db, relationship
 
 
+
 #TODO: Upgrade DB with voting models and setup unit tests for them.
 
 class Contestant(Model):
@@ -70,6 +71,7 @@ class Matchup(Model):
     contestant_a:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_a', foreign_keys=[contestant_a_id])
     contestant_b:     so.Mapped[Contestant] = relationship('Contestant', back_populates='matchups_as_b', foreign_keys=[contestant_b_id])
     votes:            so.Mapped[list['Vote']] = so.relationship('Vote', back_populates='matchup', cascade='all, delete-orphan')
+    comments:         so.Mapped[list['Comment']] = so.relationship('Comment', back_populates='matchup', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Matchup: {self.contestant_a.contestant_name} vs. {self.contestant_b.contestant_name}>'
