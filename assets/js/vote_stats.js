@@ -59,14 +59,16 @@ function getSessionId() {
   return sessionId;
 }
 
+// #region Comments
 
-function statsContentMatchupCommentTitle(stats) {
+function statsContentCommentTitle(stats) {
 
     const matchup_comment_count = stats.matchup_comments ? stats.matchup_comments.length : 0;
     return `<br><br><h5 class="mb-3">${matchup_comment_count} Comments</h5>`;
 }
 
-function statsContentMatchupAddComment(stats){
+
+function statsContentSubmitComment(stats){
 
     const sessionId = getSessionId();
     const matchup_add_comment_block = `
@@ -75,7 +77,11 @@ function statsContentMatchupAddComment(stats){
             <div class="flex-grow-1 w-100">
                 <div class="d-flex align-items-center">
                     <textarea class="form-control mb-2 me-2" rows="2" placeholder="Add a comment..." maxlength="300" style="resize: vertical;"></textarea>
-                    <button type="button" class="btn btn-sm btn-primary submit-comment-btn ms-1 align-self-center">
+                    <button 
+                    type="button" 
+                    class="btn btn-sm btn-primary submit-comment-btn ms-1 align-self-center"
+                    data-matchup-id="${stats.matchup_id}"
+                    >
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
@@ -83,11 +89,13 @@ function statsContentMatchupAddComment(stats){
         </div>
     `;
 
+
+
     return matchup_add_comment_block;
 
 }
 
-function statsContentMatchupComments(stats){
+function statsContentComments(stats){
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
     const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
@@ -118,11 +126,10 @@ function statsContentMatchupComments(stats){
 
 }
 
+// #endregion
 
 
-
-
-
+// #region Doughnut Chart
 
 // Doughnut chart rendering logic with dummy data
 function renderDoughnutChart(stats) {
@@ -217,9 +224,10 @@ function updateStatsDoughtnutChart() {
     }
 }
 
+// #endregion
 
 
-
+// #region Progress Bar + Vote Text
 
 function statsContentTotalVotesText(stats) {
     // Update the vote text with the percentage values
@@ -267,8 +275,7 @@ function statsContentProgressBar(activeSlide, stats){
 
 }
 
-
-function updateStatsContent(retryCount = 0) {
+function updateProgressBar(retryCount = 0) {
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
     const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
@@ -278,7 +285,7 @@ function updateStatsContent(retryCount = 0) {
 
     if (!statsContainer) {
         if (retryCount < 10) {
-            setTimeout(() => updateStatsContent(retryCount + 1), 100);
+            setTimeout(() => updateProgressBar(retryCount + 1), 100);
         }
         return;
     }
@@ -307,15 +314,17 @@ function updateStatsContent(retryCount = 0) {
     // console.log('active slide matchup id:', activeSlideMatchupId);
 }
 
+// #endregion
 
-function initializeStatsContent( retryCount = 0 ) {
+
+function initializeAllStatsContent( retryCount = 0 ) {
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
     const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
     const statsContainer = document.getElementById('matchup-stats-collapse-content');
     if (!statsContainer) {
         if (retryCount < 10) {
-            setTimeout(() => updateStatsContent(retryCount + 1), 100);
+            setTimeout(() => updateProgressBar(retryCount + 1), 100);
         }
         return;
     }
@@ -326,9 +335,9 @@ function initializeStatsContent( retryCount = 0 ) {
             ${statsContentProgressBar(activeSlide, stats)}
             ${statsContentVotesForText(stats)}
             ${statsContentDoughnutChart()}
-            ${statsContentMatchupCommentTitle(stats)}
-            ${statsContentMatchupAddComment(stats)}
-            ${statsContentMatchupComments(stats)}
+            ${statsContentCommentTitle(stats)}
+            ${statsContentSubmitComment(stats)}
+            ${statsContentComments(stats)}
         `;
         renderDoughnutChart(stats);
 
@@ -369,7 +378,7 @@ function setupVoteDelegation() {
             });
             const data = await response.json();
             window.matchupStats[data.matchup_id] = data;
-            updateStatsContent();
+            updateProgressBar();
             updateStatsDoughtnutChart();
             initializeSlideVoteButtons();
             expandViewStats();
@@ -378,6 +387,52 @@ function setupVoteDelegation() {
         }
     });
 }
+
+function setupCommentSubmitDelegation() {
+    const matchupStatsContainer = document.querySelector('.matchup-stats-container');
+    if (!matchupStatsContainer) return;
+    matchupStatsContainer.addEventListener('click', async function(event) {
+        const submit_comment_btn = event.target.closest('.submit-comment-btn');
+        if (!submit_comment_btn) return;
+
+        const sessionId = getSessionId();
+        const matchupId = submit_comment_btn.dataset.matchupId;
+
+        try {
+            const response = await fetch('/on_comment_submit/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    matchup_id: matchupId,
+                    session_id: sessionId,
+                    comment: submit_comment_btn.previousElementSibling.value.trim(),
+                })
+            });
+            const data = await response.json();
+            if (data.success && data.comment) {
+                // Add the new comment to the local stats object
+                if (!window.matchupStats[matchupId].matchup_comments) {
+                    window.matchupStats[matchupId].matchup_comments = [];
+                }
+                // Ensure the new comment has coolname and time_ago
+                data.comment.coolname = data.coolname || data.comment.coolname || '';
+                data.comment.time_ago = data.time_ago || data.comment.time_ago || '';
+                window.matchupStats[matchupId].matchup_comments.push(data.comment);
+                initializeAllStatsContent();
+                submit_comment_btn.previousElementSibling.value = '';
+            }
+        } finally {
+        }
+        
+    });
+}
+
+
+
+
+// #region Collapse Stats Logic
 
 const collapseMatchupBtn_toggle_off = 'Hide Details';
 const collapseMatchupBtn_toggle_on = 'View Details';
@@ -393,31 +448,6 @@ function setupCollapseMatchupBtnListener() {
         } else {
             // Currently collapsed, so expand
             collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_on;
-        }
-    });
-}
-
-function initializeSlideVoteButtons() {
-    // for each btn in active slide, fetch data-matchup-id
-    // fetch window.matchupstats[session_id_matchup_vote_is]
-    // if these match, please set button as active
-    const slides = document.querySelectorAll('.swiper-slide');
-    const activeSlide = slides[swiper.activeIndex];
-    const voteButtons = activeSlide ? activeSlide.querySelectorAll('.vote-btn') : [];
-
-    voteButtons.forEach(button => {
-        const matchupId = button.dataset.matchupId;
-        const contestantId = button.dataset.contestantId;
-        const stats = window.matchupStats[matchupId];
-        const sessionIdMatchupVoteIs = stats ? stats.session_id_matchup_vote_is : null;
-        
-        if (sessionIdMatchupVoteIs && sessionIdMatchupVoteIs == contestantId) {
-            button.setAttribute('aria-pressed', 'true');
-            button.classList.add('active');
-            expandViewStats();
-        } else {
-            button.setAttribute('aria-pressed', 'false');
-            button.classList.remove('active');
         }
     });
 }
@@ -444,8 +474,36 @@ function collapseViewStats() {
 
 }
 
+// #endregion
+
+function initializeSlideVoteButtons() {
+    // for each btn in active slide, fetch data-matchup-id
+    // fetch window.matchupstats[session_id_matchup_vote_is]
+    // if these match, please set button as active
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const voteButtons = activeSlide ? activeSlide.querySelectorAll('.vote-btn') : [];
+
+    voteButtons.forEach(button => {
+        const matchupId = button.dataset.matchupId;
+        const contestantId = button.dataset.contestantId;
+        const stats = window.matchupStats[matchupId];
+        const sessionIdMatchupVoteIs = stats ? stats.session_id_matchup_vote_is : null;
+        
+        if (sessionIdMatchupVoteIs && sessionIdMatchupVoteIs == contestantId) {
+            button.setAttribute('aria-pressed', 'true');
+            button.classList.add('active');
+            expandViewStats();
+        } else {
+            button.setAttribute('aria-pressed', 'false');
+            button.classList.remove('active');
+        }
+    });
+}
+
+
 swiper.on('slideChange', function () {
-    initializeStatsContent();
+    initializeAllStatsContent();
     collapseViewStats();
     initializeSlideVoteButtons();
 });
@@ -458,9 +516,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             window.matchupStats = data;
-            initializeStatsContent(10);
+            initializeAllStatsContent(10);
             initializeSlideVoteButtons();
             setupVoteDelegation();
+            setupCommentSubmitDelegation();
             setupCollapseMatchupBtnListener();
             console.log('Slide changed to index:', swiper.activeIndex);
             console.log('============== Matchup stats loaded:', window.matchupStats);

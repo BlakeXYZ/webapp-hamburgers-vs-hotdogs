@@ -7,6 +7,17 @@ class Comment(Model):
     """Model for a comment made by a user."""
     __tablename__ = 'comment'
 
+    def __init__(self, matchup, text, session_id, timestamp, **kwargs):
+        # Accept either objects or IDs
+        matchup_id = matchup.id if hasattr(matchup, 'id') else matchup
+
+
+        self.matchup_id = matchup_id
+        self.text = text
+        self.session_id = session_id
+        self.timestamp = timestamp
+        super().__init__(**kwargs)
+
     id:             so.Mapped[int] = so.mapped_column(primary_key=True)
     matchup_id:     so.Mapped[int] = so.mapped_column(sa.ForeignKey('matchup.id', ondelete='CASCADE'), index=True)
     text:           so.Mapped[str] = so.mapped_column(sa.String(256), nullable=False)

@@ -55,6 +55,7 @@ def register_blueprints(app):
     app.register_blueprint(comment.views.blueprint)
     # Exempt blueprints from CSRF protection
     csrf_protect.exempt(voting.views.blueprint)
+    csrf_protect.exempt(comment.views.blueprint)
 
     return None
 
