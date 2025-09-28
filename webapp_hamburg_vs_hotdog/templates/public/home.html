@@ -63,11 +63,9 @@
   {{ first_vote_animation() }}
 
     <div class="swiper-wrapper">
-      {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
-      {% for matchup in matchups %} 
-      
-      {% set color_a = colors | random %} 
-      {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
+      {% for matchup in matchups %}
+      {% set color_a = matchup_colors[loop.index0].a %}
+      {% set color_b = matchup_colors[loop.index0].b %}
 
       <div class="swiper-slide" 
       data-slide-matchup-id="{{ matchup.id }}"

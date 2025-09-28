@@ -10,6 +10,9 @@ from flask import (
     url_for,
     jsonify,
 )
+
+import secrets
+
 from flask_login import login_required, login_user, logout_user
 
 from webapp_hamburg_vs_hotdog.extensions import login_manager
@@ -46,11 +49,21 @@ def home():
     has_voted = False
     if session_id:
         has_voted = db.session.query(Vote).filter_by(session_id=session_id).count() > 0
-    
+
+    COLORS = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info']
+
+    matchup_colors = []
+    for matchup in matchups:
+        # Alternative to using random since we're setting random seed globally
+        color_a = secrets.choice(COLORS)
+        color_b = secrets.choice([c for c in COLORS if c != color_a])
+        matchup_colors.append({'a': color_a, 'b': color_b})
+
     return render_template("public/home.html", 
                            contestants=contestants, 
                            matchups=matchups, 
                            matchup_stats=matchup_stats, 
+                           matchup_colors=matchup_colors,
                            session_id=session_id, 
                            has_voted=has_voted,
                            )
