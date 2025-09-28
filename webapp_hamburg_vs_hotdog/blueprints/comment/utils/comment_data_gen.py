@@ -4,6 +4,7 @@ import random
 from datetime import datetime, timezone
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Vote, Matchup
+from flask import current_app
 
 
 def build_session_ids_coolname(session_id):
@@ -16,17 +17,18 @@ def build_session_ids_coolname(session_id):
             return name
 
 def build_session_ids_vote_color(matchup_id, session_id):
-    # # Query the matchup and its contestants
-    # matchup = db.session.get(Matchup, str(matchup_id))
-    # if not matchup:
-    #     return None
-    # vote = Vote.query.filter_by(matchup_id=matchup_id, session_id=session_id).first()
-    # if vote:
-    #     if vote.contestant_id == matchup.contestant_a_id:
-    #         return "a"
-    #     elif vote.contestant_id == matchup.contestant_b_id:
-    #         return "b"
-    # print(f"build_session_ids_vote_color: matchup_id={matchup_id}, session_id={session_id}")
+    # Query the matchup and its contestants
+    matchup = db.session.get(Matchup, str(matchup_id))
+    if not matchup:
+        return None
+    vote = Vote.query.filter_by(matchup_id=matchup_id, session_id=session_id).first()
+    if vote:
+        if vote.contestant_id == matchup.contestant_a_id:
+            return "a"
+        elif vote.contestant_id == matchup.contestant_b_id:
+            return "b"
+    current_app.logger.debug(f"build_session_ids_vote_color: matchup_id={matchup_id}, session_id={session_id}")
+
     return None
 
 
