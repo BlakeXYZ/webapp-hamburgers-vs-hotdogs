@@ -68,6 +68,10 @@ function statsContentCommentTitle(stats) {
 }
 
 
+
+
+
+
 function statsContentSubmitComment(stats){
 
     const sessionId = getSessionId();
@@ -79,6 +83,7 @@ function statsContentSubmitComment(stats){
                     <textarea class="form-control me-2" rows="2" placeholder="Add a comment..." maxlength="300" style="resize: vertical;"></textarea>
                     <button 
                     type="button" 
+            
                     class="btn btn-sm btn-primary submit-comment-btn ms-1 align-self-center"
                     data-matchup-id="${stats.matchup_id}"
                     >
@@ -96,6 +101,11 @@ function statsContentSubmitComment(stats){
 
 }
 
+/**
+ * Fetch each comments / session id vote info and then set 
+ *     const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
+ *     const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
+ */
 
 function statsContentComments(stats){
     const slides = document.querySelectorAll('.swiper-slide');
@@ -103,11 +113,20 @@ function statsContentComments(stats){
     const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
     const statsContainer = document.getElementById('matchup-stats-collapse-content');
 
+    const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
+    const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
+
+    // using comment's session_id and matchup_id, check if this session_id voted for A or B
+    // if voted for A, set comment-profile-icon border to activeSlideMatchupContestantAColor
+    // if voted for B, set comment-profile-icon border to activeSlideMatchupContestantBColor
+    // else, set comment-profile-icon border to neutral color (e.g., 'gray')
+
     if (stats.matchup_comments && stats.matchup_comments.length > 0) {
+        
         let comment_block = '';
         stats.matchup_comments.forEach(comment => {
             comment_block += `
-                <div class="comment mb-3">
+                <div class="comment-container mb-3">
                     <div class="d-flex align-items-start">
                         <div class="comment-profile-icon me-2" data-session-id="${comment.session_id}"></div>
                         <div>

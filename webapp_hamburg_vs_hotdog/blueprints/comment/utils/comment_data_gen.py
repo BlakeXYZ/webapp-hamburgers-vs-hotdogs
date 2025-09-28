@@ -12,10 +12,10 @@ def build_session_ids_coolname(session_id):
             name = name.replace('-', '_')
             return name
 
-
+def build_session_ids_vote_color(session_id):
+    
 
 # using comment.timestamp: 2025-09-23 00:00:25 and time now. return: "ago time
-
 def build_comment_time_ago(timestamp):
     
     # Make timestamp timezone-aware if it isn't already

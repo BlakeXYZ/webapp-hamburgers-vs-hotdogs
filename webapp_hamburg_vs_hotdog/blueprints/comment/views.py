@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, jsonify
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.comment.models import Comment
 from webapp_hamburg_vs_hotdog.blueprints.comment.forms import CommentForm
-from webapp_hamburg_vs_hotdog.blueprints.comment.utils.commentor_name_gen import build_session_ids_coolname, build_comment_time_ago
+from webapp_hamburg_vs_hotdog.blueprints.comment.utils.comment_data_gen import build_session_ids_coolname, build_comment_time_ago
 
 
 blueprint = Blueprint("comment", __name__)

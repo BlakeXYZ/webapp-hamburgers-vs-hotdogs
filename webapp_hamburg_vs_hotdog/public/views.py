@@ -25,7 +25,7 @@ from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_matchup_stats import g
 from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_contestant_stats import get_contestant_stats
 
 from webapp_hamburg_vs_hotdog.blueprints.comment.models import Comment
-from webapp_hamburg_vs_hotdog.blueprints.comment.utils.commentor_name_gen import build_session_ids_coolname, build_comment_time_ago
+from webapp_hamburg_vs_hotdog.blueprints.comment.utils.comment_data_gen import build_session_ids_coolname, build_comment_time_ago
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 

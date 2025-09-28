@@ -11,7 +11,6 @@ class Comment(Model):
         # Accept either objects or IDs
         matchup_id = matchup.id if hasattr(matchup, 'id') else matchup
 
-
         self.matchup_id = matchup_id
         self.text = text
         self.session_id = session_id
