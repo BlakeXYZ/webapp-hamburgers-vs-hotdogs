@@ -4,6 +4,8 @@ from flask import Blueprint, render_template, request, jsonify
 from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.comment.models import Comment
 from webapp_hamburg_vs_hotdog.blueprints.comment.forms import CommentForm
+from webapp_hamburg_vs_hotdog.blueprints.comment.utils.commentor_name_gen import build_session_ids_coolname, build_comment_time_ago
+
 
 blueprint = Blueprint("comment", __name__)
 
@@ -21,13 +23,18 @@ def add_comment():
         )
         db.session.add(comment)
         db.session.commit()
+
+        coolname = build_session_ids_coolname(comment.session_id)
+        time_ago = build_comment_time_ago(comment.timestamp)
         
         return jsonify(success=True, comment={
                 "id": comment.id,
                 "text": comment.text,
                 "timestamp": comment.timestamp.isoformat(),
                 "session_id": comment.session_id,
-                "matchup_id": comment.matchup_id
+                "matchup_id": comment.matchup_id,
+                "coolname": coolname,
+                "time_ago": time_ago
             })
     
     return jsonify(success=False, errors=form.errors), 400

@@ -64,7 +64,7 @@ function getSessionId() {
 function statsContentCommentTitle(stats) {
 
     const matchup_comment_count = stats.matchup_comments ? stats.matchup_comments.length : 0;
-    return `<br><br><h5 class="mb-3">${matchup_comment_count} Comments</h5>`;
+    return `<div class="mb-3">${matchup_comment_count} Comments</div>`;
 }
 
 
@@ -72,19 +72,20 @@ function statsContentSubmitComment(stats){
 
     const sessionId = getSessionId();
     const matchup_add_comment_block = `
-        <div class="d-flex align-items-start mb-3">
+        <div class="submit-comment-container d-flex align-items-start mb-3">
             <div class="comment-profile-icon me-2" data-session-id="${sessionId}"></div>
             <div class="flex-grow-1 w-100">
                 <div class="d-flex align-items-center">
-                    <textarea class="form-control mb-2 me-2" rows="2" placeholder="Add a comment..." maxlength="300" style="resize: vertical;"></textarea>
+                    <textarea class="form-control me-2" rows="2" placeholder="Add a comment..." maxlength="300" style="resize: vertical;"></textarea>
                     <button 
                     type="button" 
                     class="btn btn-sm btn-primary submit-comment-btn ms-1 align-self-center"
                     data-matchup-id="${stats.matchup_id}"
                     >
-                        <i class="fas fa-paper-plane"></i>
+                    <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
+                <div class="submit-comment-error text-danger small mt-1"></div>
             </div>
         </div>
     `;
@@ -94,6 +95,7 @@ function statsContentSubmitComment(stats){
     return matchup_add_comment_block;
 
 }
+
 
 function statsContentComments(stats){
     const slides = document.querySelectorAll('.swiper-slide');
@@ -238,7 +240,7 @@ function statsContentTotalVotesText(stats) {
 
 function statsContentVotesForText(stats) {
     return `
-        <div class="d-flex justify-content-between mb-2 gap-2">
+        <div class="votes-for-text-container d-flex justify-content-between mb-4 gap-2">
             <div id="votes-a-${stats.matchup_id}" class="text-center flex-fill">
                 <strong>Votes for ${stats.contestant_a_name}:</strong> ${stats.votes_a}
             </div>
@@ -334,12 +336,10 @@ function initializeAllStatsContent( retryCount = 0 ) {
             ${statsContentTotalVotesText(stats)}
             ${statsContentProgressBar(activeSlide, stats)}
             ${statsContentVotesForText(stats)}
-            ${statsContentDoughnutChart()}
             ${statsContentCommentTitle(stats)}
             ${statsContentSubmitComment(stats)}
             ${statsContentComments(stats)}
         `;
-        renderDoughnutChart(stats);
 
     } else {
         statsContainer.textContent = '';
@@ -416,12 +416,18 @@ function setupCommentSubmitDelegation() {
                 if (!window.matchupStats[matchupId].matchup_comments) {
                     window.matchupStats[matchupId].matchup_comments = [];
                 }
-                // Ensure the new comment has coolname and time_ago
-                data.comment.coolname = data.coolname || data.comment.coolname || '';
-                data.comment.time_ago = data.time_ago || data.comment.time_ago || '';
-                window.matchupStats[matchupId].matchup_comments.push(data.comment);
+
+                window.matchupStats[matchupId].matchup_comments.unshift(data.comment);
                 initializeAllStatsContent();
+                console.log('Updated window.matchupStats:', window.matchupStats);
                 submit_comment_btn.previousElementSibling.value = '';
+            }
+
+            if (!data.success && data.errors) {
+                const errorDiv = submit_comment_btn.parentElement.parentElement.querySelector('.submit-comment-error');
+                if (errorDiv) {
+                    errorDiv.textContent = Object.values(data.errors).flat().join(', ');
+                }
             }
         } finally {
         }

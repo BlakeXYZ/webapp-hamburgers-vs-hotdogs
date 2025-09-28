@@ -96,15 +96,4 @@ def register():
 @blueprint.route("/about/")
 def about():
     """About page."""
-    session_id = request.cookies.get('session_id')
-
-    form = LoginForm(request.form)
-    comments = db.session.query(Comment).order_by(Comment.timestamp.desc()).all()
-
-    return render_template("public/about.html", 
-                           form=form, 
-                           session_id=session_id, 
-                           comments=comments, 
-                           build_session_ids_coolname=build_session_ids_coolname, 
-                           build_comment_time_ago=build_comment_time_ago
-                           )
+    return render_template("public/about.html")
