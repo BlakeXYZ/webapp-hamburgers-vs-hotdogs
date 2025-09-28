@@ -19,8 +19,8 @@ class Comment(Model):
 
     id:             so.Mapped[int] = so.mapped_column(primary_key=True)
     matchup_id:     so.Mapped[int] = so.mapped_column(sa.ForeignKey('matchup.id', ondelete='CASCADE'), index=True)
-    text:           so.Mapped[str] = so.mapped_column(sa.String(256), nullable=False)
     session_id:     so.Mapped[str] = so.mapped_column(sa.String(64), index=True, nullable=False)
+    text:           so.Mapped[str] = so.mapped_column(sa.String(256), nullable=False)
     timestamp:      so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
 
     matchup:        so.Mapped['Matchup'] = relationship('Matchup', back_populates='comments')

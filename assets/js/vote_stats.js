@@ -116,22 +116,27 @@ function statsContentComments(stats){
     const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
     const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
 
-    // using comment's session_id and matchup_id, check if this session_id voted for A or B
-    // if voted for A, set comment-profile-icon border to activeSlideMatchupContestantAColor
-    // if voted for B, set comment-profile-icon border to activeSlideMatchupContestantBColor
-    // else, set comment-profile-icon border to neutral color (e.g., 'gray')
-
     if (stats.matchup_comments && stats.matchup_comments.length > 0) {
-        
         let comment_block = '';
         stats.matchup_comments.forEach(comment => {
+
+
+            // Determine badge color based on vote
+            let comment_badge_color = 'bg-secondary'; // default neutral color
+            if (comment.matchup_contestant_vote_a_or_b === 'a') {
+                comment_badge_color = activeSlideMatchupContestantAColor;
+            } else if (comment.matchup_contestant_vote_a_or_b === 'b') {
+                comment_badge_color = activeSlideMatchupContestantBColor;
+            }
+
             comment_block += `
+
                 <div class="comment-container mb-3">
                     <div class="d-flex align-items-start">
                         <div class="comment-profile-icon me-2" data-session-id="${comment.session_id}"></div>
                         <div>
                             <div class="d-flex align-items-center mb-1">
-                                <span class="badge bg-info text-light me-2">${comment.coolname}</span>
+                                <span class="badge ${comment_badge_color} text-light me-2">${comment.cool_name}</span>
                                 <span class="text-muted small">${comment.time_ago}</span>
                             </div>
                             <div class="fw-normal">${comment.text}</div>

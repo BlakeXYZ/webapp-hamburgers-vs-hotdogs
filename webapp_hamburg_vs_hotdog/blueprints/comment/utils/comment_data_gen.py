@@ -2,6 +2,9 @@ import coolname
 import hashlib
 import random
 from datetime import datetime, timezone
+from webapp_hamburg_vs_hotdog.database import db
+from webapp_hamburg_vs_hotdog.blueprints.voting.models import Vote, Matchup
+
 
 def build_session_ids_coolname(session_id):
     random.seed(int(hashlib.sha256(session_id.encode()).hexdigest(), 16))
@@ -12,8 +15,20 @@ def build_session_ids_coolname(session_id):
             name = name.replace('-', '_')
             return name
 
-def build_session_ids_vote_color(session_id):
-    
+def build_session_ids_vote_color(matchup_id, session_id):
+    # # Query the matchup and its contestants
+    # matchup = db.session.get(Matchup, str(matchup_id))
+    # if not matchup:
+    #     return None
+    # vote = Vote.query.filter_by(matchup_id=matchup_id, session_id=session_id).first()
+    # if vote:
+    #     if vote.contestant_id == matchup.contestant_a_id:
+    #         return "a"
+    #     elif vote.contestant_id == matchup.contestant_b_id:
+    #         return "b"
+    # print(f"build_session_ids_vote_color: matchup_id={matchup_id}, session_id={session_id}")
+    return None
+
 
 # using comment.timestamp: 2025-09-23 00:00:25 and time now. return: "ago time
 def build_comment_time_ago(timestamp):
@@ -24,7 +39,6 @@ def build_comment_time_ago(timestamp):
 
     now = datetime.now(timezone.utc)
     diff = now - timestamp
-
 
     seconds = diff.total_seconds()
     minutes = seconds / 60

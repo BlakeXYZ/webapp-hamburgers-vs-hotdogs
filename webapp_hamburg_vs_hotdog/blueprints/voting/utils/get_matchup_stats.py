@@ -1,7 +1,7 @@
 
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Matchup
 from webapp_hamburg_vs_hotdog.blueprints.comment.models import Comment
-from webapp_hamburg_vs_hotdog.blueprints.comment.utils.comment_data_gen import build_session_ids_coolname, build_comment_time_ago
+from webapp_hamburg_vs_hotdog.blueprints.comment.utils.comment_data_gen import build_session_ids_coolname,build_session_ids_vote_color, build_comment_time_ago
 
 def get_matchup_stats(matchup_id, session_id=None, message=None):
     """Return a dict of matchup stats for API or JS use."""
@@ -23,10 +23,11 @@ def get_matchup_stats(matchup_id, session_id=None, message=None):
     comments = [
         {
             'session_id': c.session_id,
-            "coolname": build_session_ids_coolname(c.session_id),
-            "time_ago": build_comment_time_ago(c.timestamp),
             'text': c.text,
-            'timestamp': c.timestamp.isoformat() if hasattr(c.timestamp, 'isoformat') else str(c.timestamp)
+            'timestamp': c.timestamp.isoformat() if hasattr(c.timestamp, 'isoformat') else str(c.timestamp),
+            'cool_name': build_session_ids_coolname(c.session_id),
+            'time_ago': build_comment_time_ago(c.timestamp),
+            'matchup_contestant_vote_a_or_b': build_session_ids_vote_color(matchup_id, c.session_id), 
         }
         for c in comments_query
     ]
