@@ -72,7 +72,7 @@ def home():
 @blueprint.route("/gallery/")
 def gallery():
     """Gallery page."""
-    contestants = db.session.query(Contestant).all()
+    contestants = contestants = db.session.query(Contestant).order_by(Contestant.contestant_name.asc()).all()
     contestants_stats = {c.id: get_contestant_stats(c) for c in contestants} # Build a dict of contestant stats for all contestants
 
     return render_template("public/gallery.html", contestants=contestants, contestants_stats=contestants_stats)
