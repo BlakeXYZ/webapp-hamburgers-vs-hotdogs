@@ -122,7 +122,7 @@ function statsContentComments(stats){
 
 
             // Determine badge color based on vote
-            let comment_badge_color = 'bg-secondary'; // default neutral color
+            let comment_badge_color = 'custom-bg-light-gray'; 
             if (comment.matchup_contestant_vote_a_or_b === 'a') {
                 comment_badge_color = activeSlideMatchupContestantAColor;
             } else if (comment.matchup_contestant_vote_a_or_b === 'b') {
