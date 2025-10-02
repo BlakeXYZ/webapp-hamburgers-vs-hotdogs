@@ -1,3 +1,15 @@
+
+# # In your current deploy.yml - deploy Traefik first
+# - name: Docker Stack Deploy Traefik
+#   uses: cssnr/stack-deploy-action@v1
+#   with:
+#     name: shared-traefik          # ✅ Separate stack for Traefik
+#     file: traefik-only-stack.yml  # ✅ File with only Traefik service
+#     host: hamburgersvshotdogs.com
+#     user: deploy
+#     ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+
+
 name: pipeline
 on:
   - push
@@ -63,6 +75,16 @@ jobs:
     - name: create env file
       run: |
         echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
+
+
+    - name: Docker Stack Deploy Traefik
+      uses: cssnr/stack-deploy-action@v1
+      with:
+        name: traefik-deploy              # Separate stack for Traefik
+        file: docker-traefik-deploy.yml   # File with only Traefik service
+        host: hamburgersvshotdogs.com
+        user: deploy
+        ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
 
     - name: Docker Stack Deploy
       uses: cssnr/stack-deploy-action@v1

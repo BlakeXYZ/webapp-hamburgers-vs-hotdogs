@@ -1,33 +1,24 @@
-services:
-  #TODO: explore logging for traefik 
-  traefik:
-    image: traefik:v3.1
-    command:
-      - "--providers.docker"
-      - "--providers.docker.exposedbydefault=false"
-      - "--certificatesresolvers.myresolver.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory" #TODO: use for testing, toggle OFF for final production deployment, and run docker volume rm ham-stack-deploy_letsencrypt
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=blakexyz@proton.me"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--entrypoints.web.address=:80"
-      - "--entryPoints.websecure.address=:443"
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-    ports:
-      - mode: host
-        protocol: tcp
-        published: 80
-        target: 80
-      - mode: host
-        protocol: tcp
-        published: 443
-        target: 443
-    volumes:
-      - letsencrypt:/letsencrypt
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - webnet
 
+# Recommendation for Your Case
+# Go with Option 1 - it's the least disruptive:
+
+# Split your current docker-stack-deploy.yml into two files:
+
+# traefik-only-stack.yml (Traefik + network + volumes)
+# app-only-stack.yml (Your web + db services)
+# Deploy both in the same GitHub Action (two steps)
+
+# Future apps can reference shared-traefik_webnet network
+
+# This way:
+
+# ✅ No new repos
+# ✅ No additional CI/CD complexity
+# ✅ Traefik is shared but managed from your main app
+# ✅ Other apps can easily join the network
+
+
+services:
   web:
     image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
     labels:
@@ -98,7 +89,6 @@ services:
 
 volumes:
   db-data:
-  letsencrypt:
 
 secrets:
   db-password:
@@ -108,3 +98,5 @@ secrets:
 
 networks:
   webnet:
+    external: true # References the shared network created by the Traefik stack
+    name: traefik-deploy_webnet  # {stack name}_{network name}
