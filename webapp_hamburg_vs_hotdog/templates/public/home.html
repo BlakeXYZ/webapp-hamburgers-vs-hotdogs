@@ -17,7 +17,7 @@
       aria-expanded="false"
       aria-controls="matchup-stats-collapse"
     >
-      View Stats
+      View Details
     </button>
   </div> 
 
@@ -25,7 +25,14 @@
     <div class="card card-body fw-light" id="matchup-stats-collapse-content">
       Placeholder Text
     </div>
+
+    <div class="container text-center mt-3">
+      <a href="{{ url_for('public.gallery') }}" class="btn btn-primary btn-sm">
+        Explore Gallery
+      </a>
+    </div>
   </div>
+
 
 </div>
 {% endmacro %}
@@ -58,16 +65,13 @@
 <div class="swiper-container mt-3">
   {{ first_vote_text() }}
 
-
   <div class="swiper mySwiper">
   {{ first_vote_animation() }}
 
     <div class="swiper-wrapper">
-      {% set colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'] %} 
-      {% for matchup in matchups %} 
-      
-      {% set color_a = colors | random %} 
-      {% set color_b = (colors | reject('equalto', color_a) | list | random) %}
+      {% for matchup in matchups %}
+      {% set color_a = matchup_colors[loop.index0].a %}
+      {% set color_b = matchup_colors[loop.index0].b %}
 
       <div class="swiper-slide" 
       data-slide-matchup-id="{{ matchup.id }}"
@@ -120,7 +124,6 @@
     <script>
       window.matchupStats = {{ matchup_stats|tojson }};
     </script>
-
 
   </div>
 

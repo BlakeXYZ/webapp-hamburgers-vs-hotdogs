@@ -50,6 +50,113 @@ import { Chart } from 'chart.js/auto';
 //     }
 // }
 
+function getSessionId() {
+  let sessionId = localStorage.getItem('session_id');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID(); // For modern browsers
+    localStorage.setItem('session_id', sessionId);
+  }
+  return sessionId;
+}
+
+// #region Comments
+
+function statsContentCommentTitle(stats) {
+
+    const matchup_comment_count = stats.matchup_comments ? stats.matchup_comments.length : 0;
+    return `<div class="mb-3">${matchup_comment_count} Comments</div>`;
+}
+
+
+
+
+
+
+function statsContentSubmitComment(stats){
+
+    const sessionId = getSessionId();
+    const matchup_add_comment_block = `
+        <div class="submit-comment-container d-flex align-items-start mb-3">
+            <div class="comment-profile-icon me-2" data-session-id="${sessionId}"></div>
+            <div class="flex-grow-1 w-100">
+                <div class="d-flex align-items-center">
+                    <textarea class="form-control me-2" rows="2" placeholder="Add a comment..." maxlength="300" style="resize: vertical;"></textarea>
+                    <button 
+                    type="button" 
+            
+                    class="btn btn-sm btn-primary submit-comment-btn ms-1 align-self-center"
+                    data-matchup-id="${stats.matchup_id}"
+                    >
+                    <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="submit-comment-error text-danger small mt-1"></div>
+            </div>
+        </div>
+    `;
+
+
+
+    return matchup_add_comment_block;
+
+}
+
+/**
+ * Fetch each comments / session id vote info and then set 
+ *     const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
+ *     const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
+ */
+
+function statsContentComments(stats){
+    const slides = document.querySelectorAll('.swiper-slide');
+    const activeSlide = slides[swiper.activeIndex];
+    const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
+    const statsContainer = document.getElementById('matchup-stats-collapse-content');
+
+    const activeSlideMatchupContestantAColor = activeSlide.getAttribute('data-slide-matchup-contestant-a-color') || 'bg-primary';
+    const activeSlideMatchupContestantBColor = activeSlide.getAttribute('data-slide-matchup-contestant-b-color') || 'bg-danger';
+
+    if (stats.matchup_comments && stats.matchup_comments.length > 0) {
+        let comment_block = '';
+        stats.matchup_comments.forEach(comment => {
+
+
+            // Determine badge color based on vote
+            let comment_badge_color = 'custom-bg-light-gray'; 
+            if (comment.matchup_contestant_vote_a_or_b === 'a') {
+                comment_badge_color = activeSlideMatchupContestantAColor;
+            } else if (comment.matchup_contestant_vote_a_or_b === 'b') {
+                comment_badge_color = activeSlideMatchupContestantBColor;
+            }
+
+            comment_block += `
+
+                <div class="comment-container mb-3">
+                    <div class="d-flex align-items-start">
+                        <div class="comment-profile-icon me-2" data-session-id="${comment.session_id}"></div>
+                        <div>
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="badge ${comment_badge_color} text-light me-2">${comment.cool_name}</span>
+                                <span class="text-muted small">${comment.time_ago}</span>
+                            </div>
+                            <div class="fw-normal">${comment.text}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        return comment_block;
+    }
+
+    return `<div class="comment"><em>No comments yet.</em></div>`;
+
+}
+
+// #endregion
+
+
+// #region Doughnut Chart
+
 // Doughnut chart rendering logic with dummy data
 function renderDoughnutChart(stats) {
 
@@ -143,16 +250,10 @@ function updateStatsDoughtnutChart() {
     }
 }
 
+// #endregion
 
-function getSessionId() {
-  let sessionId = localStorage.getItem('session_id');
-  if (!sessionId) {
-    sessionId = crypto.randomUUID(); // For modern browsers
-    localStorage.setItem('session_id', sessionId);
-  }
-  return sessionId;
-}
 
+// #region Progress Bar + Vote Text
 
 function statsContentTotalVotesText(stats) {
     // Update the vote text with the percentage values
@@ -163,7 +264,7 @@ function statsContentTotalVotesText(stats) {
 
 function statsContentVotesForText(stats) {
     return `
-        <div class="d-flex justify-content-between mb-2 gap-2">
+        <div class="votes-for-text-container d-flex justify-content-between mb-4 gap-2">
             <div id="votes-a-${stats.matchup_id}" class="text-center flex-fill">
                 <strong>Votes for ${stats.contestant_a_name}:</strong> ${stats.votes_a}
             </div>
@@ -200,8 +301,7 @@ function statsContentProgressBar(activeSlide, stats){
 
 }
 
-
-function updateStatsContent(retryCount = 0) {
+function updateProgressBar(retryCount = 0) {
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
     const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
@@ -211,7 +311,7 @@ function updateStatsContent(retryCount = 0) {
 
     if (!statsContainer) {
         if (retryCount < 10) {
-            setTimeout(() => updateStatsContent(retryCount + 1), 100);
+            setTimeout(() => updateProgressBar(retryCount + 1), 100);
         }
         return;
     }
@@ -240,15 +340,17 @@ function updateStatsContent(retryCount = 0) {
     // console.log('active slide matchup id:', activeSlideMatchupId);
 }
 
+// #endregion
 
-function initializeStatsContent( retryCount = 0 ) {
+
+function initializeAllStatsContent( retryCount = 0 ) {
     const slides = document.querySelectorAll('.swiper-slide');
     const activeSlide = slides[swiper.activeIndex];
     const activeSlideMatchupId = activeSlide ? activeSlide.getAttribute('data-slide-matchup-id') : '';
     const statsContainer = document.getElementById('matchup-stats-collapse-content');
     if (!statsContainer) {
         if (retryCount < 10) {
-            setTimeout(() => updateStatsContent(retryCount + 1), 100);
+            setTimeout(() => updateProgressBar(retryCount + 1), 100);
         }
         return;
     }
@@ -258,9 +360,10 @@ function initializeStatsContent( retryCount = 0 ) {
             ${statsContentTotalVotesText(stats)}
             ${statsContentProgressBar(activeSlide, stats)}
             ${statsContentVotesForText(stats)}
-            ${statsContentDoughnutChart()}
+            ${statsContentCommentTitle(stats)}
+            ${statsContentSubmitComment(stats)}
+            ${statsContentComments(stats)}
         `;
-        renderDoughnutChart(stats);
 
     } else {
         statsContainer.textContent = '';
@@ -299,7 +402,7 @@ function setupVoteDelegation() {
             });
             const data = await response.json();
             window.matchupStats[data.matchup_id] = data;
-            updateStatsContent();
+            updateProgressBar();
             updateStatsDoughtnutChart();
             initializeSlideVoteButtons();
             expandViewStats();
@@ -309,6 +412,61 @@ function setupVoteDelegation() {
     });
 }
 
+function setupCommentSubmitDelegation() {
+    const matchupStatsContainer = document.querySelector('.matchup-stats-container');
+    if (!matchupStatsContainer) return;
+    matchupStatsContainer.addEventListener('click', async function(event) {
+        const submit_comment_btn = event.target.closest('.submit-comment-btn');
+        if (!submit_comment_btn) return;
+
+        const sessionId = getSessionId();
+        const matchupId = submit_comment_btn.dataset.matchupId;
+
+        try {
+            const response = await fetch('/on_comment_submit/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    matchup_id: matchupId,
+                    session_id: sessionId,
+                    comment: submit_comment_btn.previousElementSibling.value.trim(),
+                })
+            });
+            const data = await response.json();
+            if (data.success && data.comment) {
+                // Add the new comment to the local stats object
+                if (!window.matchupStats[matchupId].matchup_comments) {
+                    window.matchupStats[matchupId].matchup_comments = [];
+                }
+
+                window.matchupStats[matchupId].matchup_comments.unshift(data.comment);
+                initializeAllStatsContent();
+                console.log('Updated window.matchupStats:', window.matchupStats);
+                submit_comment_btn.previousElementSibling.value = '';
+            }
+
+            if (!data.success && data.errors) {
+                const errorDiv = submit_comment_btn.parentElement.parentElement.querySelector('.submit-comment-error');
+                if (errorDiv) {
+                    errorDiv.textContent = Object.values(data.errors).flat().join(', ');
+                }
+            }
+        } finally {
+        }
+        
+    });
+}
+
+
+
+
+// #region Collapse Stats Logic
+
+const collapseMatchupBtn_toggle_off = 'Hide Details';
+const collapseMatchupBtn_toggle_on = 'View Details';
+
 function setupCollapseMatchupBtnListener() {
     const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
     if (!collapseMatchupBtn) return;
@@ -316,13 +474,37 @@ function setupCollapseMatchupBtnListener() {
     collapseMatchupBtn.addEventListener('click', function() {
         if (this.getAttribute('aria-expanded') === 'true') {
             // Currently expanded, so collapse
-            collapseMatchupBtn.textContent = 'Hide Stats';
+            collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_off;
         } else {
             // Currently collapsed, so expand
-            collapseMatchupBtn.textContent = 'View Stats';
+            collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_on;
         }
     });
 }
+
+function expandViewStats() {
+    const collapseContent = document.getElementById('matchup-stats-collapse');
+    if (!collapseContent) return;
+    const bsCollapse = Collapse.getOrCreateInstance(collapseContent);
+    bsCollapse.show();
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_off;
+
+}
+
+function collapseViewStats() {
+    const collapseContent = document.getElementById('matchup-stats-collapse');
+    if (!collapseContent) return;
+    collapseContent.classList.add('collapse');
+    collapseContent.classList.remove('show');
+
+    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
+    collapseMatchupBtn.textContent = collapseMatchupBtn_toggle_on;
+
+}
+
+// #endregion
 
 function initializeSlideVoteButtons() {
     // for each btn in active slide, fetch data-matchup-id
@@ -349,30 +531,9 @@ function initializeSlideVoteButtons() {
     });
 }
 
-function expandViewStats() {
-    const collapseContent = document.getElementById('matchup-stats-collapse');
-    if (!collapseContent) return;
-    const bsCollapse = Collapse.getOrCreateInstance(collapseContent);
-    bsCollapse.show();
-
-    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
-    collapseMatchupBtn.textContent = 'Hide Stats';
- 
-}
-
-function collapseViewStats() {
-    const collapseContent = document.getElementById('matchup-stats-collapse');
-    if (!collapseContent) return;
-    collapseContent.classList.add('collapse');
-    collapseContent.classList.remove('show');
-
-    const collapseMatchupBtn = document.querySelector('.btn-matchup-stats');
-    collapseMatchupBtn.textContent = 'View Stats';
-
-}
 
 swiper.on('slideChange', function () {
-    initializeStatsContent();
+    initializeAllStatsContent();
     collapseViewStats();
     initializeSlideVoteButtons();
 });
@@ -385,11 +546,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             window.matchupStats = data;
-            initializeStatsContent(10);
+            initializeAllStatsContent(10);
             initializeSlideVoteButtons();
             setupVoteDelegation();
+            setupCommentSubmitDelegation();
             setupCollapseMatchupBtnListener();
-            // console.log('Slide changed to index:', swiper.activeIndex);
-            // console.log('============== Matchup stats loaded:', window.matchupStats);
+            console.log('Slide changed to index:', swiper.activeIndex);
+            console.log('============== Matchup stats loaded:', window.matchupStats);
         });
 });

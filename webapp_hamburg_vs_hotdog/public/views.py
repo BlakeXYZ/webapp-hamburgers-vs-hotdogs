@@ -10,6 +10,9 @@ from flask import (
     url_for,
     jsonify,
 )
+
+import secrets
+
 from flask_login import login_required, login_user, logout_user
 
 from webapp_hamburg_vs_hotdog.extensions import login_manager
@@ -23,6 +26,9 @@ from webapp_hamburg_vs_hotdog.database import db
 from webapp_hamburg_vs_hotdog.blueprints.voting.models import Contestant, Matchup, Vote
 from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_matchup_stats import get_matchup_stats
 from webapp_hamburg_vs_hotdog.blueprints.voting.utils.get_contestant_stats import get_contestant_stats
+
+from webapp_hamburg_vs_hotdog.blueprints.comment.models import Comment
+from webapp_hamburg_vs_hotdog.blueprints.comment.utils.comment_data_gen import build_session_ids_coolname, build_comment_time_ago
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
@@ -43,14 +49,30 @@ def home():
     has_voted = False
     if session_id:
         has_voted = db.session.query(Vote).filter_by(session_id=session_id).count() > 0
-    
-    return render_template("public/home.html", contestants=contestants, matchups=matchups, matchup_stats=matchup_stats, session_id=session_id, has_voted=has_voted)
+
+    COLORS = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info']
+
+    matchup_colors = []
+    for matchup in matchups:
+        # Alternative to using random since we're setting random seed globally
+        color_a = secrets.choice(COLORS)
+        color_b = secrets.choice([c for c in COLORS if c != color_a])
+        matchup_colors.append({'a': color_a, 'b': color_b})
+
+    return render_template("public/home.html", 
+                           contestants=contestants, 
+                           matchups=matchups, 
+                           matchup_stats=matchup_stats, 
+                           matchup_colors=matchup_colors,
+                           session_id=session_id, 
+                           has_voted=has_voted,
+                           )
 
 
 @blueprint.route("/gallery/")
 def gallery():
     """Gallery page."""
-    contestants = db.session.query(Contestant).all()
+    contestants = contestants = db.session.query(Contestant).order_by(Contestant.contestant_name.asc()).all()
     contestants_stats = {c.id: get_contestant_stats(c) for c in contestants} # Build a dict of contestant stats for all contestants
 
     return render_template("public/gallery.html", contestants=contestants, contestants_stats=contestants_stats)
@@ -87,8 +109,4 @@ def register():
 @blueprint.route("/about/")
 def about():
     """About page."""
-    form = LoginForm(request.form)
-    return render_template("public/about.html", form=form)
-
-
-
+    return render_template("public/about.html")
