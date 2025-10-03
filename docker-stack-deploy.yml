@@ -69,7 +69,7 @@ services:
         parallelism: 1              # Update one container at a time
         delay: 10s                  # Wait between updates
         failure_action: rollback    # Rollback on failure
-        order: stop-first           # Stop old containers BEFORE starting new ones
+        order: start-first             # Stop old containers BEFORE starting new ones
       restart_policy:
         condition: on-failure       # Restart if container fails
         delay: 5s                   # Wait before restarting
