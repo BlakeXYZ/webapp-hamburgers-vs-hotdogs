@@ -67,8 +67,8 @@ services:
     deploy:
       update_config:
         order: start-first
-    depends_on:
-      - db
+    # depends_on: # Doesnt work in Swarm mode, use healthchecks instead
+    #   - db
 
   # #connect to: http://{ip_address}:8081
   # to remove, run: - docker service rm ham-stack-deploy_pgadmin

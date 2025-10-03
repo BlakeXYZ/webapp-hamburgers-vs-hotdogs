@@ -100,3 +100,14 @@ jobs:
         #   docker stack ls
         #   docker service ls
         #   docker service ps ham-test-gitactions-test_web  --no-trunc 
+
+    # After deploying the stack
+    - name: Ensure Web Service Starts Properly
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: hamburgersvshotdogs.com
+        username: deploy
+        key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+        script: |
+          sleep 10  # Wait for services to start
+          docker service update --force ham-stack-deploy_web
