@@ -22,6 +22,7 @@
     docker compose -f docker-compose-dev.yml run --rm manage db history
 
 --- 
+
 ### How to view local flask dev, SQLALCHEMY>SQLITE db while running Docker Container
 Download Microsoft's extension: Container Tools
 
