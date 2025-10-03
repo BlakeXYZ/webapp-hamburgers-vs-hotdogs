@@ -37,6 +37,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      order: start-first    # Start new containers BEFORE stopping old ones
 
   web:
     image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
@@ -64,11 +66,20 @@ services:
       - FLASK_DEBUG=0
       - LOG_LEVEL=info
       - GUNICORN_WORKERS=4
-    deploy:
-      update_config:
-        order: start-first
+  deploy:
+    update_config:
+      parallelism: 1              # Update one container at a time
+      delay: 10s                  # Wait between updates
+      failure_action: rollback    # Rollback on failure
+      order: stop-first           # Stop old containers BEFORE starting new ones
+    restart_policy:
+      condition: on-failure       # Restart if container fails
+      delay: 5s                   # Wait before restarting
+      max_attempts: 3             # Max restart attempts
     # depends_on: # Doesnt work in Swarm mode, use healthchecks instead
     #   - db
+
+
 
   # #connect to: http://{ip_address}:8081
   # to remove, run: - docker service rm ham-stack-deploy_pgadmin
