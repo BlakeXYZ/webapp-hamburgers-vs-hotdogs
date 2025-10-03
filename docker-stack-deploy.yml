@@ -37,8 +37,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      order: start-first    # Start new containers BEFORE stopping old ones
 
   web:
     image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
