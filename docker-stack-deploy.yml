@@ -66,18 +66,18 @@ services:
       - FLASK_DEBUG=0
       - LOG_LEVEL=info
       - GUNICORN_WORKERS=4
-  deploy:
-    update_config:
-      parallelism: 1              # Update one container at a time
-      delay: 10s                  # Wait between updates
-      failure_action: rollback    # Rollback on failure
-      order: stop-first           # Stop old containers BEFORE starting new ones
-    restart_policy:
-      condition: on-failure       # Restart if container fails
-      delay: 5s                   # Wait before restarting
-      max_attempts: 3             # Max restart attempts
-    # depends_on: # Doesnt work in Swarm mode, use healthchecks instead
-    #   - db
+    deploy:
+      update_config:
+        parallelism: 1              # Update one container at a time
+        delay: 10s                  # Wait between updates
+        failure_action: rollback    # Rollback on failure
+        order: stop-first           # Stop old containers BEFORE starting new ones
+      restart_policy:
+        condition: on-failure       # Restart if container fails
+        delay: 5s                   # Wait before restarting
+        max_attempts: 3             # Max restart attempts
+      # depends_on: # Doesnt work in Swarm mode, use healthchecks instead
+      #   - db
 
 
 
