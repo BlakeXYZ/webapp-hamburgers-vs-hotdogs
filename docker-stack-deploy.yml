@@ -19,6 +19,25 @@
 
 
 services:
+
+  db:
+    image: postgres
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - webnet
+    secrets:
+      - db-password
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   web:
     image: ghcr.io/blakexyz/ham-test-gitactions-test:${GIT_COMMIT_HASH:-latest}
     labels:
@@ -50,26 +69,6 @@ services:
         order: start-first
     depends_on:
       - db
-
-  #TODO: investigate best practice to store/backup database data
-  #TODO: setup pgadmin - https://stackoverflow.com/questions/77736033/docker-compose-postgres-pgadmin-setup
-  db:
-    image: postgres
-    user: postgres
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - webnet
-    secrets:
-      - db-password
-    environment:
-      - POSTGRES_DB=app
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-    healthcheck:
-      test: [ "CMD", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   # #connect to: http://{ip_address}:8081
   # to remove, run: - docker service rm ham-stack-deploy_pgadmin
