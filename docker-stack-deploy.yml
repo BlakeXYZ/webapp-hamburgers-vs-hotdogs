@@ -63,7 +63,7 @@ services:
       - BCRYPT_LOG_ROUNDS=13
       - FLASK_DEBUG=0
       - LOG_LEVEL=info
-      - GUNICORN_WORKERS=4
+      - GUNICORN_WORKERS=1
     deploy:
       update_config:
         parallelism: 1              # Update one container at a time
