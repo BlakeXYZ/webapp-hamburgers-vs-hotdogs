@@ -23,11 +23,19 @@ if ENV == "production":
     if POSTGRES_PASSWORD_FILE and os.path.exists(POSTGRES_PASSWORD_FILE):
         with open(POSTGRES_PASSWORD_FILE) as f:
             POSTGRES_PASSWORD = f.read().strip()
+        print(f"✅ Successfully read password (length: {len(POSTGRES_PASSWORD)})")
+    else:
+        print(f"❌ Password file not found: {POSTGRES_PASSWORD_FILE}")
+        raise ValueError("No database password found!")
+
+    if not POSTGRES_PASSWORD:
+        raise ValueError("No database password found!")
 
     SQLALCHEMY_DATABASE_URI = (
         f"postgresql+psycopg2://{env.str('POSTGRES_USER', 'postgres')}:{POSTGRES_PASSWORD}@"
-        f"{env.str('POSTGRES_HOST', 'localhost')}:{env.int('POSTGRES_PORT', 5432)}/{env.str('POSTGRES_DB', 'app')}"
+        f"{env.str('POSTGRES_HOST', 'db')}:{env.int('POSTGRES_PORT', 5432)}/{env.str('POSTGRES_DB', 'app')}"
     )
+    print(f"✅ Database URI: postgresql+psycopg2://postgres:***@{env.str('POSTGRES_HOST', 'db')}:5432/{env.str('POSTGRES_DB', 'app')}")
 
 if ENV == "development":
     SQLALCHEMY_DATABASE_URI = env.str("DATABASE_URL")
