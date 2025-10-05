@@ -51,7 +51,7 @@ services:
     secrets:
       - db-password
     environment:
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=ham-stack-deploy_db
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
       - POSTGRES_USER=postgres
       - POSTGRES_DB=app

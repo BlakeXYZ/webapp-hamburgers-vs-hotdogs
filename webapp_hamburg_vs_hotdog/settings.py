@@ -33,9 +33,9 @@ if ENV == "production":
 
     SQLALCHEMY_DATABASE_URI = (
         f"postgresql+psycopg2://{env.str('POSTGRES_USER', 'postgres')}:{POSTGRES_PASSWORD}@"
-        f"{env.str('POSTGRES_HOST', 'db')}:{env.int('POSTGRES_PORT', 5432)}/{env.str('POSTGRES_DB', 'app')}"
+        f"{env.str('POSTGRES_HOST', 'ham-stack-deploy_db')}:{env.int('POSTGRES_PORT', 5432)}/{env.str('POSTGRES_DB', 'app')}"
     )
-    print(f"✅ Database URI: postgresql+psycopg2://postgres:***@{env.str('POSTGRES_HOST', 'db')}:5432/{env.str('POSTGRES_DB', 'app')}")
+    print(f"✅ Database URI: postgresql+psycopg2://postgres:***@{env.str('POSTGRES_HOST', 'ham-stack-deploy_db')}:5432/{env.str('POSTGRES_DB', 'app')}")
 
 if ENV == "development":
     SQLALCHEMY_DATABASE_URI = env.str("DATABASE_URL")
