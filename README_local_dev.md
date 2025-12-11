@@ -22,6 +22,7 @@
     docker compose -f docker-compose-dev.yml run --rm manage db history
 
 --- 
+
 ### How to view local flask dev, SQLALCHEMY>SQLITE db while running Docker Container
 Download Microsoft's extension: Container Tools
 
@@ -50,6 +51,15 @@ Remove-Item -Recurse -Force .\migrations\versions\*
 flask db upgrade
 
 ---
-###
+### Clean up VPS Docker old images + containers
 
-# Adding images into contestant table
+# List images to see what you have
+docker images
+# Remove unused images (safe - only removes untagged images)
+docker image prune -f
+
+# List all containers (including stopped ones)
+docker ps -a
+# Remove all stopped containers
+docker container prune -f
+
