@@ -16,7 +16,6 @@
 # ✅ Traefik is shared but managed from your main app
 # ✅ Other apps can easily join the network
 
-
 services:
 
   db:
