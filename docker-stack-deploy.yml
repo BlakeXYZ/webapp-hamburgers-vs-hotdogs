@@ -19,10 +19,10 @@
 services:
 
   db:
-    image: postgres:16
+    image: postgres:18
     user: postgres
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql
     networks:
       - webnet
     secrets:
