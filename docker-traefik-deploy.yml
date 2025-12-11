@@ -5,7 +5,7 @@ services:
     command:
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
-      - "--certificatesresolvers.myresolver.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory" #TODO: use for testing, toggle OFF for final production deployment, and run docker volume rm ham-stack-deploy_letsencrypt
+      # - "--certificatesresolvers.myresolver.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory" #TODO: use for testing, toggle OFF for final production deployment, and run docker volume rm ham-stack-deploy_letsencrypt
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.myresolver.acme.email=blakexyz@proton.me"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
